@@ -98,7 +98,7 @@ button:hover{ transform:translateY(-2px); }
   background:#ffe6ec;
 }
 
-/* Hearts Ultra */
+/* Hearts */
 .heart{
   position:fixed;
   font-size:22px;
@@ -113,9 +113,7 @@ button:hover{ transform:translateY(-2px); }
     transform:translate(0,0) scale(1);
     opacity:1;
   }
-  60%{
-    opacity:1;
-  }
+  60%{ opacity:1; }
   100%{
     transform:translate(var(--x), var(--y)) scale(0.3) rotate(900deg);
     opacity:0;
@@ -170,7 +168,6 @@ button:hover{ transform:translateY(-2px); }
 
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
-<!-- tiny correct sound -->
 <audio id="tingSound">
   <source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
 </audio>
@@ -217,14 +214,14 @@ button:hover{ transform:translateY(-2px); }
 
 <script>
 const questions=[
-{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Đà Nẵng","Huế"],correct:0},
-{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:0},
-{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Không ai"],correct:1},
-{q:"Ai nói yêu trước?",a:["Anh","Em","Cùng lúc","Không nhớ"],correct:0},
-{q:"Tụi mình từng chia tay rồi quay lại mấy lần?",a:["0","1","2","3"],correct:1},
+{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Buôn Ma Thuột","Hông nhớ nữa"],correct:0},
+{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
+{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
+{q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Chúng tôi chung tình cơ mà"],correct:1},
+{q:"Anh thích ăn gì nhất?",a:["Steak cháy cạnh","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
 {q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
-{q:"Điều anh trân trọng nhất ở em?",a:["Sự mạnh mẽ","Sự dịu dàng","Cả hai","Nụ cười"],correct:2},
-{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Rất lâu","Mãi mãi"],correct:3}
+{q:"Điều mà anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
+{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Trăm năm","Mãi mãi"],correct:3}
 ];
 
 let current=0;
