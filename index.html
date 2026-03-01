@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8/3 Dành Cho Em 💙</title>
+<title>8/3 Ultimate Edition 💙</title>
 
 <style>
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  background:linear-gradient(135deg,#fff6f8,#fdeef4);
+  background:linear-gradient(135deg,#fff7f9,#fdeef4);
   overflow:hidden;
   text-align:center;
   color:#444;
 }
 
+/* ===== Layout ===== */
 .container{
   min-height:100vh;
   display:flex;
@@ -23,6 +24,7 @@ body{
   align-items:center;
   padding:20px;
   position:relative;
+  z-index:2;
 }
 
 button{
@@ -34,10 +36,17 @@ button{
   font-size:1rem;
   cursor:pointer;
   margin-top:20px;
+  box-shadow:0 6px 18px rgba(255,122,158,0.4);
+  transition:0.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
 }
 
 .hidden{display:none;}
 
+/* ===== Progress ===== */
 .progress{
   width:80%;
   max-width:400px;
@@ -55,6 +64,7 @@ button{
   transition:width 0.4s ease;
 }
 
+/* ===== Options ===== */
 .option{
   background:white;
   padding:12px;
@@ -71,25 +81,24 @@ button{
   transform:translateY(-2px);
 }
 
-/* Confetti */
+/* ===== Confetti ===== */
 .confetti{
   position:fixed;
   width:8px;
   height:8px;
-  background:red;
   top:-10px;
-  animation:fall 3s linear forwards;
+  animation:fall 4s linear forwards;
 }
 
 @keyframes fall{
   to{transform:translateY(110vh) rotate(720deg);}
 }
 
-/* Baby flower */
+/* ===== Baby particles ===== */
 .baby{
   position:absolute;
-  font-size:20px;
-  opacity:0.7;
+  font-size:16px;
+  opacity:0.6;
   animation:float 6s infinite ease-in-out;
 }
 
@@ -99,20 +108,58 @@ button{
   100%{transform:translateY(0);}
 }
 
-/* Letter */
-.letter{
-  max-width:500px;
-  background:#fffdf9;
-  padding:25px;
-  border-radius:15px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.1);
-  font-family:cursive;
-  line-height:1.8;
-  opacity:0;
-  animation:fadeIn 2s forwards;
+/* ===== Bouquet glow ===== */
+.bouquet{
+  animation:glow 3s infinite alternate ease-in-out;
 }
 
-@keyframes fadeIn{
+@keyframes glow{
+  from{filter:drop-shadow(0 0 5px rgba(255,120,150,0.3));}
+  to{filter:drop-shadow(0 0 18px rgba(255,120,150,0.6));}
+}
+
+/* ===== Letter Scene Background ===== */
+.letter-scene{
+  position:fixed;
+  inset:0;
+  background:url('background.webp') center/cover no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  transition:opacity 1.5s ease;
+  z-index:1;
+}
+
+.letter-scene.active{
+  opacity:1;
+}
+
+.letter-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+}
+
+.letter{
+  max-width:520px;
+  background:#fffdf9;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.15);
+  line-height:1.8;
+  font-family:cursive;
+  position:relative;
+  z-index:2;
+}
+
+/* ===== Letter line animation ===== */
+.line{
+  opacity:0;
+  animation:fadeLine 1.8s forwards;
+}
+
+@keyframes fadeLine{
   to{opacity:1;}
 }
 </style>
@@ -122,50 +169,59 @@ button{
 
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
+<!-- ===== START ===== -->
 <div class="container" id="start">
-  <h2>8/3 này, anh có một điều nhỏ muốn dành cho em 💙</h2>
-  <button onclick="startGame()">Bắt đầu thử thách</button>
+  <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
+  <button onclick="startGame()">Bắt đầu</button>
 </div>
 
+<!-- ===== GAME ===== -->
 <div class="container hidden" id="game">
   <div class="progress"><div class="bar" id="progressBar"></div></div>
   <h3 id="question"></h3>
   <div id="options"></div>
 </div>
 
+<!-- ===== REWARD BUTTON ===== -->
 <div class="container hidden" id="reward">
   <button onclick="showFlowers()">Nhận quà 🌸</button>
 </div>
 
+<!-- ===== FLOWERS ===== -->
 <div class="container hidden" id="flowers">
 
-  <!-- Baby floating -->
-  <div class="baby" style="top:10%;left:20%;">🤍</div>
-  <div class="baby" style="top:20%;left:70%;">🤍</div>
-  <div class="baby" style="top:70%;left:30%;">🤍</div>
+  <div class="baby" style="top:15%;left:20%;">🤍</div>
+  <div class="baby" style="top:25%;left:70%;">🤍</div>
+  <div class="baby" style="top:70%;left:35%;">🤍</div>
 
-  <!-- SVG Bouquet -->
-  <svg width="200" height="250" viewBox="0 0 200 250">
-    <circle cx="100" cy="80" r="30" fill="#e63946"/>
-    <circle cx="70" cy="100" r="25" fill="#ff758f"/>
-    <circle cx="130" cy="100" r="25" fill="#ff758f"/>
-    <line x1="100" y1="110" x2="100" y2="200" stroke="#2a9d8f" stroke-width="4"/>
-    <line x1="70" y1="125" x2="80" y2="200" stroke="#2a9d8f" stroke-width="3"/>
-    <line x1="130" y1="125" x2="120" y2="200" stroke="#2a9d8f" stroke-width="3"/>
+  <svg class="bouquet" width="240" height="300" viewBox="0 0 240 300">
+    <circle cx="120" cy="90" r="35" fill="#e63946"/>
+    <circle cx="85" cy="120" r="28" fill="#ff758f"/>
+    <circle cx="155" cy="120" r="28" fill="#ff758f"/>
+    <circle cx="120" cy="140" r="22" fill="#ff9eb5"/>
+    <line x1="120" y1="120" x2="120" y2="250" stroke="#2a9d8f" stroke-width="5"/>
+    <line x1="85" y1="140" x2="100" y2="250" stroke="#2a9d8f" stroke-width="4"/>
+    <line x1="155" y1="140" x2="140" y2="250" stroke="#2a9d8f" stroke-width="4"/>
   </svg>
 
   <p>Giữa rất nhiều điều trên thế giới này… anh vẫn chọn em.</p>
   <button onclick="showLetter()">Mở thư ✉️</button>
 </div>
 
-<div class="container hidden" id="letter">
-  <div class="letter">
-    <div>Em à,</div><br>
-    <div>Cảm ơn em vì đã luôn dịu dàng và mạnh mẽ.</div><br>
-    <div>8/3 này anh không ở cạnh em được,</div><br>
-    <div>nhưng em luôn là điều anh trân trọng nhất.</div><br>
-    <div>Chúc em một ngày thật ấm áp.</div><br>
-    <div>Anh yêu em 💙</div>
+<!-- ===== LETTER ===== -->
+<div id="letter" class="hidden">
+  <div class="letter-scene" id="letterScene">
+    <div class="letter-overlay"></div>
+
+    <div class="letter">
+      <div class="line" style="animation-delay:0s">Em à,</div><br>
+      <div class="line" style="animation-delay:2s">Cảm ơn em vì đã luôn dịu dàng và mạnh mẽ.</div><br>
+      <div class="line" style="animation-delay:4s">8/3 này anh không ở cạnh em được,</div><br>
+      <div class="line" style="animation-delay:6s">nhưng em luôn là điều anh trân trọng nhất.</div><br>
+      <div class="line" style="animation-delay:8s">Chúc em một ngày thật ấm áp và hạnh phúc.</div><br>
+      <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
+    </div>
+
   </div>
 </div>
 
@@ -188,7 +244,7 @@ function startGame(){
   document.getElementById("game").classList.remove("hidden");
 
   const bg=document.getElementById("bgMusic");
-  bg.volume=0.02; // studio mix
+  bg.volume=0.015; // ultra cinematic
   bg.play();
 
   showQuestion();
@@ -231,13 +287,13 @@ function updateProgress(){
 }
 
 function launchConfetti(){
-  for(let i=0;i<50;i++){
+  for(let i=0;i<80;i++){
     const conf=document.createElement("div");
     conf.className="confetti";
     conf.style.left=Math.random()*100+"vw";
     conf.style.background=`hsl(${Math.random()*360},70%,60%)`;
     document.body.appendChild(conf);
-    setTimeout(()=>conf.remove(),3000);
+    setTimeout(()=>conf.remove(),4000);
   }
 }
 
@@ -249,6 +305,10 @@ function showFlowers(){
 function showLetter(){
   document.getElementById("flowers").classList.add("hidden");
   document.getElementById("letter").classList.remove("hidden");
+
+  setTimeout(()=>{
+    document.getElementById("letterScene").classList.add("active");
+  },100);
 }
 </script>
 
