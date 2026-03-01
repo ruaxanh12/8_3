@@ -9,7 +9,7 @@
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  background:linear-gradient(135deg,#ffe3ec,#ffc6da);
+  background:linear-gradient(135deg,#ffe6ef,#ffd4e6);
   overflow:hidden;
   text-align:center;
   color:#444;
@@ -47,7 +47,7 @@ button:hover{ transform:translateY(-2px); }
   width:80%;
   max-width:420px;
   height:16px;
-  background:#ffd1e0;
+  background:#ffdbe9;
   border-radius:30px;
   margin-bottom:25px;
   overflow:hidden;
@@ -57,20 +57,21 @@ button:hover{ transform:translateY(-2px); }
 .bar{
   height:100%;
   width:0%;
-  background:linear-gradient(90deg,#ff6f9c,#ff2e6e);
+  background:linear-gradient(90deg,#ff9fbd,#ff6f9c);
   transition:width 0.8s cubic-bezier(.22,1,.36,1), background 0.5s ease;
 }
 
-/* flash effect */
 .progress.flash{
   animation:progressPulse 0.6s ease;
 }
 
 @keyframes progressPulse{
   0%{box-shadow:0 0 0 rgba(255,0,90,0);}
-  50%{box-shadow:0 0 25px rgba(255,0,90,0.8);}
+  50%{box-shadow:0 0 20px rgba(255,0,90,0.5);}
   100%{box-shadow:0 0 0 rgba(255,0,90,0);}
 }
+
+/* ===== OPTION ===== */
 
 .option{
   background:white;
@@ -82,7 +83,7 @@ button:hover{ transform:translateY(-2px); }
   box-shadow:0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* HEART */
+/* ===== HEART ===== */
 
 .heart{
   position:fixed;
@@ -128,6 +129,11 @@ button:hover{ transform:translateY(-2px); }
   </div>
   <h3 id="question"></h3>
   <div id="options"></div>
+</div>
+
+<div class="container hidden" id="rewardMessage">
+  <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
+  <button onclick="alert('Phần tiếp theo của anh ở bản đầy đủ nha 😆')">Nhận quà nhó</button>
 </div>
 
 <script>
@@ -187,15 +193,24 @@ function checkAnswer(index,element){
     let percent=(current/questions.length)*100;
     progressBar.style.width=percent+"%";
 
-    let intensity=80-(current*6);
-    progressBar.style.background=`linear-gradient(90deg,hsl(340,90%,${intensity}%),hsl(340,90%,${intensity-15}%))`;
+    /* màu nhạt -> đậm vừa phải */
+    let lightness=78-(current*3);
+    progressBar.style.background=
+      `linear-gradient(90deg,hsl(340,85%,${lightness}%),hsl(340,85%,${lightness-8}%))`;
 
     progressContainer.classList.add("flash");
     setTimeout(()=>progressContainer.classList.remove("flash"),600);
 
     if(current<questions.length){
       setTimeout(showQuestion,800);
+    }else{
+      /* FIX CHUYỂN MÀN */
+      setTimeout(()=>{
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("rewardMessage").classList.remove("hidden");
+      },900);
     }
+
   }else{
     alert("Em nghĩ lại xem nào 💭");
   }
@@ -204,7 +219,7 @@ function checkAnswer(index,element){
 function launchHearts(element){
   const rect=element.getBoundingClientRect();
   const colors=["❤️","💗","💖","💘","💕","💓"];
-  for(let i=0;i<30;i++){
+  for(let i=0;i<25;i++){
     const heart=document.createElement("div");
     heart.className="heart";
     heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
