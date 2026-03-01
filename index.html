@@ -39,25 +39,36 @@ button{
   transition:0.3s;
 }
 
-button:hover{ transform:translateY(-2px); }
-
 .hidden{display:none;}
 
 .progress{
   width:80%;
   max-width:400px;
-  height:12px;
+  height:14px;
   background:#ffd6df;
   border-radius:10px;
   margin-bottom:25px;
   overflow:hidden;
+  position:relative;
 }
 
 .bar{
   height:100%;
   width:0%;
   background:#ff7a9e;
-  transition:width 0.4s ease;
+  transition:width 0.6s ease;
+}
+
+.progress.shake{
+  animation:shake 0.4s ease;
+}
+
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-3px)}
+  50%{transform:translateX(3px)}
+  75%{transform:translateX(-2px)}
+  100%{transform:translateX(0)}
 }
 
 .option{
@@ -69,22 +80,40 @@ button:hover{ transform:translateY(-2px); }
   width:260px;
   box-shadow:0 4px 12px rgba(0,0,0,0.05);
   transition:0.3s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.option:hover{
+.option.selected{
   background:#ffe6ec;
-  transform:translateY(-2px);
 }
 
-/* ===== Letter Scene ===== */
+.heart{
+  position:fixed;
+  font-size:18px;
+  pointer-events:none;
+  animation:fly 1s ease-out forwards;
+}
+
+@keyframes fly{
+  0%{
+    transform:translate(0,0) scale(1);
+    opacity:1;
+  }
+  100%{
+    transform:translate(var(--x), var(--y)) scale(0.6);
+    opacity:0;
+  }
+}
+
+/* LETTER */
 .letter-scene{
   position:fixed;
   inset:0;
   background:url('background.webp') center/cover no-repeat;
   display:flex;
   justify-content:center;
-  align-items:flex-start;  /* ⭐ đẩy thư lên cao */
-  padding-top:90px;        /* ⭐ chỉnh vị trí cao hơn */
+  align-items:flex-start;
+  padding-top:90px;
   opacity:0;
   transition:opacity 1.5s ease;
 }
@@ -124,30 +153,27 @@ button:hover{ transform:translateY(-2px); }
 
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
-<!-- START -->
 <div class="container" id="start">
   <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
   <button onclick="startGame()">Bắt đầu</button>
 </div>
 
-<!-- GAME -->
 <div class="container hidden" id="game">
-  <div class="progress"><div class="bar" id="progressBar"></div></div>
+  <div class="progress" id="progressContainer">
+    <div class="bar" id="progressBar"></div>
+  </div>
   <h3 id="question"></h3>
   <div id="options"></div>
 </div>
 
-<!-- SUCCESS MESSAGE -->
 <div class="container hidden" id="rewardMessage">
   <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
   <button onclick="showLetter()">Nhận quà nhó</button>
 </div>
 
-<!-- LETTER -->
 <div id="letter" class="hidden">
   <div class="letter-scene" id="letterScene">
     <div class="letter-overlay"></div>
-
     <div class="letter">
       <div class="line" style="animation-delay:0s">Em à,</div><br>
       <div class="line" style="animation-delay:2s">Cảm ơn em vì đã luôn dịu dàng và mạnh mẽ.</div><br>
@@ -156,7 +182,6 @@ button:hover{ transform:translateY(-2px); }
       <div class="line" style="animation-delay:8s">Chúc em một ngày thật ấm áp và hạnh phúc.</div><br>
       <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
     </div>
-
   </div>
 </div>
 
@@ -177,11 +202,9 @@ let current=0;
 function startGame(){
   document.getElementById("start").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
-
   const bg=document.getElementById("bgMusic");
-  bg.volume=0.015;
+  bg.volume=0.02;
   bg.play();
-
   showQuestion();
 }
 
@@ -190,43 +213,76 @@ function showQuestion(){
   document.getElementById("question").innerText=q.q;
   const optionsDiv=document.getElementById("options");
   optionsDiv.innerHTML="";
+
   q.a.forEach((option,index)=>{
     const btn=document.createElement("div");
     btn.className="option";
     btn.innerText=option;
-    btn.onclick=()=>checkAnswer(index);
+
+    btn.onclick=(e)=>{
+      document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+      btn.classList.add("selected");
+      checkAnswer(index,btn);
+    };
+
     optionsDiv.appendChild(btn);
   });
 }
 
-function checkAnswer(index){
+function checkAnswer(index,element){
   if(index===questions[current].correct){
+    launchHearts(element);
+    fillProgress();
     current++;
-    updateProgress();
 
-    if(current<questions.length){
-      showQuestion();
-    }else{
-      document.getElementById("game").classList.add("hidden");
-      document.getElementById("rewardMessage").classList.remove("hidden");
-    }
+    setTimeout(()=>{
+      if(current<questions.length){
+        showQuestion();
+      }else{
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("rewardMessage").classList.remove("hidden");
+      }
+    },800);
   }else{
     alert("Em nghĩ lại xem nào 💭");
   }
 }
 
-function updateProgress(){
-  const percent=(current/questions.length)*100;
+function fillProgress(){
+  const percent=((current+1)/questions.length)*100;
   document.getElementById("progressBar").style.width=percent+"%";
+
+  const progress=document.getElementById("progressContainer");
+  progress.classList.add("shake");
+  setTimeout(()=>progress.classList.remove("shake"),400);
+}
+
+function launchHearts(element){
+  const rect=element.getBoundingClientRect();
+  const progress=document.getElementById("progressContainer").getBoundingClientRect();
+
+  for(let i=0;i<12;i++){
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML="❤️";
+    heart.style.left=rect.left+rect.width/2+"px";
+    heart.style.top=rect.top+"px";
+
+    const x=progress.left+progress.width/2-rect.left;
+    const y=progress.top-rect.top-40;
+
+    heart.style.setProperty("--x",x+(Math.random()*40-20)+"px");
+    heart.style.setProperty("--y",y+"px");
+
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),1000);
+  }
 }
 
 function showLetter(){
   document.getElementById("rewardMessage").classList.add("hidden");
   document.getElementById("letter").classList.remove("hidden");
-
-  setTimeout(()=>{
-    document.getElementById("letterScene").classList.add("active");
-  },100);
+  setTimeout(()=>document.getElementById("letterScene").classList.add("active"),100);
 }
 </script>
 
