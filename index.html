@@ -1,6 +1,206 @@
-<script>
-console.log("Script loaded");
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8/3 Cinematic Final</title>
 
+<style>
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  background:linear-gradient(135deg,#fff7f9,#fdeef4);
+  overflow:hidden;
+  text-align:center;
+  color:#444;
+}
+
+.container{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.hidden{display:none;}
+
+button{
+  padding:12px 26px;
+  border:none;
+  border-radius:30px;
+  background:#ff7a9e;
+  color:white;
+  font-size:1rem;
+  cursor:pointer;
+  margin-top:20px;
+}
+
+/* Progress */
+.progress{
+  width:80%;
+  max-width:400px;
+  height:16px;
+  background:#ffd6df;
+  border-radius:10px;
+  margin-bottom:25px;
+  overflow:hidden;
+  position:relative;
+}
+
+.bar{
+  height:100%;
+  width:0%;
+  background:#ff7a9e;
+  transition:width 1s ease;
+}
+
+/* Options */
+.option{
+  background:white;
+  padding:14px;
+  margin:10px 0;
+  border-radius:15px;
+  cursor:pointer;
+  width:270px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Hearts */
+.heart{
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  animation:fly 2.5s ease forwards;
+}
+
+@keyframes fly{
+  0%{transform:translate(0,0) scale(1);opacity:1;}
+  100%{transform:translate(var(--x), var(--y)) scale(0.3);opacity:0;}
+}
+
+/* Letter */
+.letter-scene{
+  position:fixed;
+  inset:0;
+  background:url('background.webp') center/cover no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding-top:80px;
+  opacity:0;
+  transition:opacity 1.5s ease;
+}
+
+.letter-scene.active{ opacity:1; }
+
+.letter-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+}
+
+.letter{
+  max-width:560px;
+  background:#fffdf9;
+  padding:35px;
+  border-radius:20px;
+  line-height:2;
+  font-size:20px;
+  font-family:Georgia, serif;
+  position:relative;
+  z-index:2;
+}
+
+.line{
+  opacity:0;
+  animation:fadeLine 2s forwards;
+}
+
+@keyframes fadeLine{
+  to{opacity:1;}
+}
+
+/* Ending */
+.ending-screen{
+  position:fixed;
+  inset:0;
+  background:url('ending.jpg') center/cover no-repeat;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  transition:opacity 2s ease;
+  z-index:10;
+}
+
+.ending-screen.active{opacity:1;}
+
+.restart-btn{
+  margin-top:30px;
+  background:white;
+  color:#ff5c8a;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" src="piano.m4a" loop></audio>
+
+<!-- START -->
+<div class="container" id="start">
+  <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
+  <button id="btnStart">Bắt đầu</button>
+</div>
+
+<!-- INTRO -->
+<div class="container hidden" id="intro">
+  <h3>
+  Cùng nhau chơi 1 trò chơi nhỏ để nhận quà nha bé ơi,<br>
+  em phải trả lời đúng hết thì mới có quà nhen hehe 💙
+  </h3>
+  <button id="btnPlay">Chơi luôn</button>
+</div>
+
+<!-- GAME -->
+<div class="container hidden" id="game">
+  <div class="progress">
+    <div class="bar" id="progressBar"></div>
+  </div>
+  <h3 id="question"></h3>
+  <div id="options"></div>
+</div>
+
+<!-- REWARD -->
+<div class="container hidden" id="rewardMessage">
+  <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
+  <button onclick="showLetter()">Nhận quà nhó</button>
+</div>
+
+<!-- LETTER -->
+<div id="letter" class="hidden">
+  <div class="letter-scene" id="letterScene">
+    <div class="letter-overlay"></div>
+    <div class="letter">
+      <div class="line" style="animation-delay:0s">Em à,</div><br>
+      <div class="line" style="animation-delay:2s">Cảm ơn em vì đã yêu thương anh.</div><br>
+      <div class="line" style="animation-delay:4s">8/3 này tuy anh không ở cạnh em được,</div><br>
+      <div class="line" style="animation-delay:6s">nhưng em luôn là điều mà anh trân trọng nhất.</div><br>
+      <div class="line" style="animation-delay:8s">Chúc em có một ngày thật ấm áp và hạnh phúc.</div><br>
+      <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
+    </div>
+  </div>
+</div>
+
+<!-- ENDING -->
+<div class="ending-screen" id="endingScreen">
+  <button class="restart-btn" onclick="location.reload()">Chơi lại</button>
+</div>
+
+<script>
 const questions=[
 {q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Buôn Ma Thuột","Hông nhớ nữa"],correct:0},
 {q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
@@ -14,32 +214,25 @@ const questions=[
 
 let current=0;
 
-function showIntro(){
-  console.log("Intro clicked");
+document.getElementById("btnStart").addEventListener("click",()=>{
   document.getElementById("start").classList.add("hidden");
   document.getElementById("intro").classList.remove("hidden");
-}
+});
 
-function startGame(){
-  console.log("Game started");
+document.getElementById("btnPlay").addEventListener("click",()=>{
   document.getElementById("intro").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
-
-  const bg=document.getElementById("bgMusic");
-  if(bg){
-    bg.volume=0.05;
-    bg.play().catch(()=>{});
-  }
-
   showQuestion();
-}
+  const bg=document.getElementById("bgMusic");
+  bg.volume=0.05;
+  bg.play().catch(()=>{});
+});
 
 function showQuestion(){
   const q=questions[current];
   document.getElementById("question").innerText=q.q;
   const optionsDiv=document.getElementById("options");
   optionsDiv.innerHTML="";
-
   q.a.forEach((option,index)=>{
     const btn=document.createElement("div");
     btn.className="option";
@@ -74,6 +267,7 @@ function fillProgress(){
 function showLetter(){
   document.getElementById("rewardMessage").classList.add("hidden");
   document.getElementById("letter").classList.remove("hidden");
+
   setTimeout(()=>{
     document.getElementById("letterScene").classList.add("active");
   },100);
@@ -81,6 +275,9 @@ function showLetter(){
   setTimeout(()=>{
     document.getElementById("letter").classList.add("hidden");
     document.getElementById("endingScreen").classList.add("active");
-  },17000); 
+  },17000);
 }
 </script>
+
+</body>
+</html>
