@@ -15,6 +15,7 @@ body{
   color:#444;
 }
 
+/* Layout */
 .container{
   min-height:100vh;
   display:flex;
@@ -25,6 +26,8 @@ body{
   position:relative;
   z-index:2;
 }
+
+.hidden{display:none;}
 
 button{
   padding:12px 26px;
@@ -39,8 +42,9 @@ button{
   transition:0.3s;
 }
 
-.hidden{display:none;}
+button:hover{ transform:translateY(-2px); }
 
+/* Progress */
 .progress{
   width:80%;
   max-width:400px;
@@ -56,7 +60,7 @@ button{
   height:100%;
   width:0%;
   background:#ff7a9e;
-  transition:width 0.6s ease;
+  transition:width 0.8s cubic-bezier(.22,1,.36,1);
 }
 
 .progress.shake{
@@ -65,12 +69,13 @@ button{
 
 @keyframes shake{
   0%{transform:translateX(0)}
-  25%{transform:translateX(-3px)}
-  50%{transform:translateX(3px)}
+  25%{transform:translateX(-4px)}
+  50%{transform:translateX(4px)}
   75%{transform:translateX(-2px)}
   100%{transform:translateX(0)}
 }
 
+/* Options */
 .option{
   background:white;
   padding:12px;
@@ -87,11 +92,13 @@ button{
   background:#ffe6ec;
 }
 
+/* Hearts */
 .heart{
   position:fixed;
-  font-size:18px;
+  font-size:20px;
   pointer-events:none;
-  animation:fly 1s ease-out forwards;
+  z-index:9999;
+  animation:fly 1.4s cubic-bezier(.22,1,.36,1) forwards;
 }
 
 @keyframes fly{
@@ -100,12 +107,12 @@ button{
     opacity:1;
   }
   100%{
-    transform:translate(var(--x), var(--y)) scale(0.6);
+    transform:translate(var(--x), var(--y)) scale(0.4) rotate(720deg);
     opacity:0;
   }
 }
 
-/* LETTER */
+/* Letter */
 .letter-scene{
   position:fixed;
   inset:0;
@@ -153,11 +160,22 @@ button{
 
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
+<!-- Start -->
 <div class="container" id="start">
   <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
-  <button onclick="startGame()">Bắt đầu</button>
+  <button onclick="showIntro()">Bắt đầu</button>
 </div>
 
+<!-- Intro -->
+<div class="container hidden" id="intro">
+  <h3>
+  Cùng nhau chơi 1 trò chơi nhỏ để nhận quà nha bé ơi,<br>
+  em phải trả lời đúng hết thì mới có quà nhen hehe 💙
+  </h3>
+  <button onclick="startGame()">Chơi luôn</button>
+</div>
+
+<!-- Game -->
 <div class="container hidden" id="game">
   <div class="progress" id="progressContainer">
     <div class="bar" id="progressBar"></div>
@@ -166,11 +184,13 @@ button{
   <div id="options"></div>
 </div>
 
+<!-- Reward -->
 <div class="container hidden" id="rewardMessage">
   <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
   <button onclick="showLetter()">Nhận quà nhó</button>
 </div>
 
+<!-- Letter -->
 <div id="letter" class="hidden">
   <div class="letter-scene" id="letterScene">
     <div class="letter-overlay"></div>
@@ -186,21 +206,17 @@ button{
 </div>
 
 <script>
-const questions=[
-{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Đà Nẵng","Huế"],correct:0},
-{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:0},
-{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Không ai"],correct:1},
-{q:"Ai nói yêu trước?",a:["Anh","Em","Cùng lúc","Không nhớ"],correct:0},
-{q:"Tụi mình từng chia tay rồi quay lại mấy lần?",a:["0","1","2","3"],correct:1},
-{q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
-{q:"Điều anh trân trọng nhất ở em?",a:["Sự mạnh mẽ","Sự dịu dàng","Cả hai","Nụ cười"],correct:2},
-{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Rất lâu","Mãi mãi"],correct:3}
-];
+const questions=[ ...same as before... ];
 
 let current=0;
 
-function startGame(){
+function showIntro(){
   document.getElementById("start").classList.add("hidden");
+  document.getElementById("intro").classList.remove("hidden");
+}
+
+function startGame(){
+  document.getElementById("intro").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
   const bg=document.getElementById("bgMusic");
   bg.volume=0.02;
@@ -218,13 +234,7 @@ function showQuestion(){
     const btn=document.createElement("div");
     btn.className="option";
     btn.innerText=option;
-
-    btn.onclick=(e)=>{
-      document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
-      btn.classList.add("selected");
-      checkAnswer(index,btn);
-    };
-
+    btn.onclick=()=>checkAnswer(index,btn);
     optionsDiv.appendChild(btn);
   });
 }
@@ -242,7 +252,7 @@ function checkAnswer(index,element){
         document.getElementById("game").classList.add("hidden");
         document.getElementById("rewardMessage").classList.remove("hidden");
       }
-    },800);
+    },1000);
   }else{
     alert("Em nghĩ lại xem nào 💭");
   }
@@ -251,7 +261,6 @@ function checkAnswer(index,element){
 function fillProgress(){
   const percent=((current+1)/questions.length)*100;
   document.getElementById("progressBar").style.width=percent+"%";
-
   const progress=document.getElementById("progressContainer");
   progress.classList.add("shake");
   setTimeout(()=>progress.classList.remove("shake"),400);
@@ -261,21 +270,24 @@ function launchHearts(element){
   const rect=element.getBoundingClientRect();
   const progress=document.getElementById("progressContainer").getBoundingClientRect();
 
-  for(let i=0;i<12;i++){
+  const colors=["❤️","💗","💖","💘","💕","💓"];
+
+  for(let i=0;i<30;i++){
     const heart=document.createElement("div");
     heart.className="heart";
-    heart.innerHTML="❤️";
+    heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
+
     heart.style.left=rect.left+rect.width/2+"px";
     heart.style.top=rect.top+"px";
 
-    const x=progress.left+progress.width/2-rect.left;
-    const y=progress.top-rect.top-40;
+    const x=progress.left+progress.width/2-rect.left+(Math.random()*120-60);
+    const y=progress.top-rect.top-60+(Math.random()*40-20);
 
-    heart.style.setProperty("--x",x+(Math.random()*40-20)+"px");
+    heart.style.setProperty("--x",x+"px");
     heart.style.setProperty("--y",y+"px");
 
     document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),1000);
+    setTimeout(()=>heart.remove(),1400);
   }
 }
 
