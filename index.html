@@ -112,13 +112,14 @@ button:hover{ transform:translateY(-2px); }
 .proposal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.7);
+  background:rgba(0,0,0,0.75);
   display:flex;
   justify-content:center;
   align-items:center;
   font-size:3rem;
   color:white;
   opacity:0;
+  pointer-events:none; /* FIX QUAN TRỌNG */
   transform:scale(0.8);
   transition:all 1.5s ease;
   z-index:1000;
@@ -126,6 +127,7 @@ button:hover{ transform:translateY(-2px); }
 .proposal.show{
   opacity:1;
   transform:scale(1);
+  pointer-events:auto;
   text-shadow:0 0 40px white;
 }
 
@@ -225,7 +227,7 @@ function startGame(){
   document.getElementById("intro").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
   bgMusic.volume=0.03;
-  bgMusic.play();
+  bgMusic.play().catch(()=>{});
   showQuestion();
 }
 
@@ -249,7 +251,7 @@ function checkAnswer(index,element){
   if(index===questions[current].correct){
     element.classList.add("selected");
     ting.currentTime=0;
-    ting.play();
+    ting.play().catch(()=>{});
     launchHearts(element);
 
     current++;
@@ -288,13 +290,15 @@ function launchHearts(element){
 
 function showProposal(){
   document.getElementById("rewardMessage").classList.add("hidden");
-  document.getElementById("proposalText").classList.add("show");
-  launchHearts(document.getElementById("proposalText"));
+  const proposal=document.getElementById("proposalText");
+  proposal.classList.add("show");
+  launchHearts(proposal);
   setTimeout(showEnding,4000);
 }
 
 function showEnding(){
-  document.getElementById("ending").classList.add("show");
+  const ending=document.getElementById("ending");
+  ending.classList.add("show");
   setTimeout(()=>document.getElementById("endingImg").classList.add("focus"),500);
 }
 </script>
