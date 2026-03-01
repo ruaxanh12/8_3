@@ -39,8 +39,7 @@ button{
 }
 button:hover{ transform:translateY(-2px); }
 
-/* PROGRESS */
-
+/* Progress */
 .progress{
   width:80%;
   max-width:420px;
@@ -50,7 +49,6 @@ button:hover{ transform:translateY(-2px); }
   margin-bottom:25px;
   overflow:hidden;
 }
-
 .bar{
   height:100%;
   width:0%;
@@ -58,8 +56,7 @@ button:hover{ transform:translateY(-2px); }
   transition:width 0.8s cubic-bezier(.22,1,.36,1);
 }
 
-/* OPTION */
-
+/* Options */
 .option{
   background:white;
   padding:12px;
@@ -70,20 +67,16 @@ button:hover{ transform:translateY(-2px); }
   box-shadow:0 4px 12px rgba(0,0,0,0.05);
   transition:all 0.25s ease;
 }
-
 .option.selected{
   background:#ffd6e6;
   transform:scale(1.05);
-  box-shadow:0 6px 20px rgba(255,0,120,0.4);
 }
-
 .option.wrong{
   background:#ffd0d0;
   transform:scale(1.05);
 }
 
-/* HEART */
-
+/* Hearts */
 .heart{
   position:fixed;
   font-size:26px;
@@ -91,7 +84,6 @@ button:hover{ transform:translateY(-2px); }
   z-index:9999;
   animation:fly 3.5s cubic-bezier(.22,1,.36,1) forwards;
 }
-
 @keyframes fly{
   0%{transform:translate(0,0) scale(1);opacity:1;}
   100%{
@@ -100,8 +92,7 @@ button:hover{ transform:translateY(-2px); }
   }
 }
 
-/* LETTER */
-
+/* Letter */
 .letter-scene{
   position:fixed;
   inset:0;
@@ -114,20 +105,17 @@ button:hover{ transform:translateY(-2px); }
   transition:opacity 1.5s ease;
   z-index:50;
 }
-.letter-scene.active{ opacity:1; }
-
+.letter-scene.active{opacity:1;}
 .letter-overlay{
   position:absolute;
   inset:0;
   background:rgba(0,0,0,0.4);
 }
-
 .letter{
   max-width:520px;
   background:#fffdf9;
   padding:40px 32px;
   border-radius:18px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.2);
   line-height:1.7;
   font-family:"Georgia","Times New Roman",serif;
   font-size:1.5rem;
@@ -135,7 +123,6 @@ button:hover{ transform:translateY(-2px); }
   position:relative;
   z-index:2;
 }
-
 .line{
   opacity:0;
   transform:translateY(10px);
@@ -145,8 +132,7 @@ button:hover{ transform:translateY(-2px); }
   to{opacity:1; transform:translateY(0);}
 }
 
-/* PROPOSAL */
-
+/* Proposal */
 .proposal{
   position:fixed;
   inset:0;
@@ -166,11 +152,9 @@ button:hover{ transform:translateY(-2px); }
   opacity:1;
   transform:scale(1);
   pointer-events:auto;
-  text-shadow:0 0 40px white;
 }
 
-/* ENDING */
-
+/* Ending */
 .ending{
   position:fixed;
   inset:0;
@@ -258,38 +242,107 @@ const bgMusic=document.getElementById("bgMusic");
 const ting=document.getElementById("tingSound");
 const progressBar=document.getElementById("progressBar");
 
-const questions=[ /* giữ nguyên bộ câu hỏi của em */ ];
+const questions=[
+{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Buôn Ma Thuột","Hông nhớ nữa"],correct:0},
+{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
+{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
+{q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Chúng tôi chung tình cơ mà"],correct:1},
+{q:"Anh thích ăn gì nhất?",a:["Steak cháy cạnh","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
+{q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
+{q:"Điều mà anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
+{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Trăm năm","Mãi mãi"],correct:3}
+];
+
 let current=0;
 
 function showIntro(){
-  start.classList.add("hidden");
-  intro.classList.remove("hidden");
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("intro").classList.remove("hidden");
 }
 
 function startGame(){
-  intro.classList.add("hidden");
-  game.classList.remove("hidden");
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
   bgMusic.volume=0.03;
   bgMusic.play().catch(()=>{});
   showQuestion();
 }
 
+function showQuestion(){
+  const q=questions[current];
+  document.getElementById("question").innerText=q.q;
+  const optionsDiv=document.getElementById("options");
+  optionsDiv.innerHTML="";
+  q.a.forEach((option,index)=>{
+    const btn=document.createElement("div");
+    btn.className="option";
+    btn.innerText=option;
+    btn.onclick=()=>checkAnswer(index,btn);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+function checkAnswer(index,element){
+  document.querySelectorAll(".option").forEach(opt=>opt.classList.remove("selected","wrong"));
+
+  if(index===questions[current].correct){
+    element.classList.add("selected");
+    ting.currentTime=0;
+    ting.play().catch(()=>{});
+    launchHearts(element);
+
+    current++;
+    progressBar.style.width=(current/questions.length*100)+"%";
+
+    if(current===questions.length){
+      setTimeout(()=>{
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("rewardMessage").classList.remove("hidden");
+      },1200);
+    }else{
+      setTimeout(showQuestion,1000);
+    }
+
+  }else{
+    element.classList.add("wrong");
+    setTimeout(()=>element.classList.remove("wrong"),600);
+  }
+}
+
+function launchHearts(element){
+  const rect=element.getBoundingClientRect();
+  const colors=["❤️","💗","💖","💘","💕","💓"];
+  for(let i=0;i<20;i++){
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
+    heart.style.left=rect.left+rect.width/2+"px";
+    heart.style.top=rect.top+"px";
+    heart.style.setProperty("--x",(Math.random()*300-150)+"px");
+    heart.style.setProperty("--y",-(Math.random()*500+200)+"px");
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),3500);
+  }
+}
+
 function showLetter(){
-  rewardMessage.classList.add("hidden");
-  letter.classList.remove("hidden");
-  setTimeout(()=>letterScene.classList.add("active"),100);
+  document.getElementById("rewardMessage").classList.add("hidden");
+  document.getElementById("letter").classList.remove("hidden");
+  setTimeout(()=>document.getElementById("letterScene").classList.add("active"),100);
   setTimeout(showProposal,15000);
 }
 
 function showProposal(){
-  proposalText.classList.add("show");
-  launchHearts(proposalText);
+  const proposal=document.getElementById("proposalText");
+  proposal.classList.add("show");
+  launchHearts(proposal);
   setTimeout(showEnding,4000);
 }
 
 function showEnding(){
+  const ending=document.getElementById("ending");
   ending.classList.add("show");
-  setTimeout(()=>endingImg.classList.add("focus"),500);
+  setTimeout(()=>document.getElementById("endingImg").classList.add("focus"),500);
 }
 </script>
 
