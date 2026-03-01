@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8/3 Ultimate Edition 💙</title>
+<title>8/3 Ultimate Cinematic 💙</title>
 
 <style>
 body{
@@ -60,18 +60,24 @@ button:hover{ transform:translateY(-2px); }
   height:100%;
   width:0%;
   background:#ff7a9e;
-  transition:width 0.8s cubic-bezier(.22,1,.36,1);
+  transition:width 0.9s cubic-bezier(.22,1,.36,1);
 }
 
 .progress.shake{
-  animation:shake 0.4s ease;
+  animation:shake 0.5s ease;
+}
+
+.progress.glow{
+  box-shadow:0 0 20px rgba(255,120,150,0.8);
+  transition:box-shadow 0.6s ease;
 }
 
 @keyframes shake{
   0%{transform:translateX(0)}
-  25%{transform:translateX(-4px)}
-  50%{transform:translateX(4px)}
-  75%{transform:translateX(-2px)}
+  20%{transform:translateX(-4px)}
+  40%{transform:translateX(4px)}
+  60%{transform:translateX(-3px)}
+  80%{transform:translateX(3px)}
   100%{transform:translateX(0)}
 }
 
@@ -92,13 +98,14 @@ button:hover{ transform:translateY(-2px); }
   background:#ffe6ec;
 }
 
-/* Hearts */
+/* Hearts Ultra */
 .heart{
   position:fixed;
-  font-size:20px;
+  font-size:22px;
   pointer-events:none;
   z-index:9999;
-  animation:fly 1.4s cubic-bezier(.22,1,.36,1) forwards;
+  animation:fly 1.8s cubic-bezier(.22,1,.36,1) forwards;
+  filter:drop-shadow(0 0 6px rgba(255,120,150,0.6));
 }
 
 @keyframes fly{
@@ -106,8 +113,11 @@ button:hover{ transform:translateY(-2px); }
     transform:translate(0,0) scale(1);
     opacity:1;
   }
+  60%{
+    opacity:1;
+  }
   100%{
-    transform:translate(var(--x), var(--y)) scale(0.4) rotate(720deg);
+    transform:translate(var(--x), var(--y)) scale(0.3) rotate(900deg);
     opacity:0;
   }
 }
@@ -160,13 +170,16 @@ button:hover{ transform:translateY(-2px); }
 
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
-<!-- Start -->
+<!-- tiny correct sound -->
+<audio id="tingSound">
+  <source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
+</audio>
+
 <div class="container" id="start">
   <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
   <button onclick="showIntro()">Bắt đầu</button>
 </div>
 
-<!-- Intro -->
 <div class="container hidden" id="intro">
   <h3>
   Cùng nhau chơi 1 trò chơi nhỏ để nhận quà nha bé ơi,<br>
@@ -175,7 +188,6 @@ button:hover{ transform:translateY(-2px); }
   <button onclick="startGame()">Chơi luôn</button>
 </div>
 
-<!-- Game -->
 <div class="container hidden" id="game">
   <div class="progress" id="progressContainer">
     <div class="bar" id="progressBar"></div>
@@ -184,13 +196,11 @@ button:hover{ transform:translateY(-2px); }
   <div id="options"></div>
 </div>
 
-<!-- Reward -->
 <div class="container hidden" id="rewardMessage">
   <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
   <button onclick="showLetter()">Nhận quà nhó</button>
 </div>
 
-<!-- Letter -->
 <div id="letter" class="hidden">
   <div class="letter-scene" id="letterScene">
     <div class="letter-overlay"></div>
@@ -206,7 +216,16 @@ button:hover{ transform:translateY(-2px); }
 </div>
 
 <script>
-const questions=[ ...same as before... ];
+const questions=[
+{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Đà Nẵng","Huế"],correct:0},
+{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:0},
+{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Không ai"],correct:1},
+{q:"Ai nói yêu trước?",a:["Anh","Em","Cùng lúc","Không nhớ"],correct:0},
+{q:"Tụi mình từng chia tay rồi quay lại mấy lần?",a:["0","1","2","3"],correct:1},
+{q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
+{q:"Điều anh trân trọng nhất ở em?",a:["Sự mạnh mẽ","Sự dịu dàng","Cả hai","Nụ cười"],correct:2},
+{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Rất lâu","Mãi mãi"],correct:3}
+];
 
 let current=0;
 
@@ -229,7 +248,6 @@ function showQuestion(){
   document.getElementById("question").innerText=q.q;
   const optionsDiv=document.getElementById("options");
   optionsDiv.innerHTML="";
-
   q.a.forEach((option,index)=>{
     const btn=document.createElement("div");
     btn.className="option";
@@ -241,10 +259,10 @@ function showQuestion(){
 
 function checkAnswer(index,element){
   if(index===questions[current].correct){
+    playTing();
     launchHearts(element);
     fillProgress();
     current++;
-
     setTimeout(()=>{
       if(current<questions.length){
         showQuestion();
@@ -252,42 +270,53 @@ function checkAnswer(index,element){
         document.getElementById("game").classList.add("hidden");
         document.getElementById("rewardMessage").classList.remove("hidden");
       }
-    },1000);
+    },1200);
   }else{
     alert("Em nghĩ lại xem nào 💭");
   }
 }
 
+function playTing(){
+  const audio=document.getElementById("tingSound");
+  if(audio) audio.play().catch(()=>{});
+}
+
 function fillProgress(){
   const percent=((current+1)/questions.length)*100;
-  document.getElementById("progressBar").style.width=percent+"%";
+  const bar=document.getElementById("progressBar");
+  bar.style.width=percent+"%";
+
   const progress=document.getElementById("progressContainer");
   progress.classList.add("shake");
-  setTimeout(()=>progress.classList.remove("shake"),400);
+  progress.classList.add("glow");
+
+  setTimeout(()=>{
+    progress.classList.remove("shake");
+    progress.classList.remove("glow");
+  },600);
 }
 
 function launchHearts(element){
   const rect=element.getBoundingClientRect();
   const progress=document.getElementById("progressContainer").getBoundingClientRect();
-
   const colors=["❤️","💗","💖","💘","💕","💓"];
 
-  for(let i=0;i<30;i++){
+  for(let i=0;i<35;i++){
     const heart=document.createElement("div");
     heart.className="heart";
     heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
-
     heart.style.left=rect.left+rect.width/2+"px";
     heart.style.top=rect.top+"px";
 
-    const x=progress.left+progress.width/2-rect.left+(Math.random()*120-60);
-    const y=progress.top-rect.top-60+(Math.random()*40-20);
+    const spread=Math.random()*200-100;
+    const x=progress.left+progress.width/2-rect.left+spread;
+    const y=progress.top-rect.top-80-(Math.random()*40);
 
     heart.style.setProperty("--x",x+"px");
     heart.style.setProperty("--y",y+"px");
 
     document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),1400);
+    setTimeout(()=>heart.remove(),1800);
   }
 }
 
