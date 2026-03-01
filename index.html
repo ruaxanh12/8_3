@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8/3 Cinematic Final</title>
+<title>8/3 Cinematic Final 💙</title>
 
 <style>
 body{
@@ -15,6 +15,7 @@ body{
   color:#444;
 }
 
+/* Layout */
 .container{
   min-height:100vh;
   display:flex;
@@ -22,6 +23,8 @@ body{
   justify-content:center;
   align-items:center;
   padding:20px;
+  position:relative;
+  z-index:2;
 }
 
 .hidden{display:none;}
@@ -35,6 +38,7 @@ button{
   font-size:1rem;
   cursor:pointer;
   margin-top:20px;
+  box-shadow:0 6px 18px rgba(255,122,158,0.4);
 }
 
 /* Progress */
@@ -53,7 +57,19 @@ button{
   height:100%;
   width:0%;
   background:#ff7a9e;
-  transition:width 1s ease;
+  transition:width 1s cubic-bezier(.22,1,.36,1);
+}
+
+.progress.shake{
+  animation:shake 0.6s ease;
+}
+
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-3px)}
+  50%{transform:translateX(3px)}
+  75%{transform:translateX(-2px)}
+  100%{transform:translateX(0)}
 }
 
 /* Options */
@@ -65,6 +81,7 @@ button{
   cursor:pointer;
   width:270px;
   box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  transition:0.3s;
 }
 
 /* Hearts */
@@ -72,12 +89,18 @@ button{
   position:fixed;
   pointer-events:none;
   z-index:9999;
-  animation:fly 2.5s ease forwards;
+  animation:fly 2.5s cubic-bezier(.22,1,.36,1) forwards;
 }
 
 @keyframes fly{
-  0%{transform:translate(0,0) scale(1);opacity:1;}
-  100%{transform:translate(var(--x), var(--y)) scale(0.3);opacity:0;}
+  0%{
+    transform:translate(0,0) scale(1);
+    opacity:1;
+  }
+  100%{
+    transform:translate(var(--x), var(--y)) scale(0.4) rotate(720deg);
+    opacity:0;
+  }
 }
 
 /* Letter */
@@ -106,8 +129,9 @@ button{
   background:#fffdf9;
   padding:35px;
   border-radius:20px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.2);
   line-height:2;
-  font-size:20px;
+  font-size:18px;
   font-family:Georgia, serif;
   position:relative;
   z-index:2;
@@ -122,11 +146,11 @@ button{
   to{opacity:1;}
 }
 
-/* Ending */
+/* Ending image */
 .ending-screen{
   position:fixed;
   inset:0;
-  background:url('ending.jpg') center/cover no-repeat;
+  background:url('ending.img') center/cover no-repeat;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -136,7 +160,9 @@ button{
   z-index:10;
 }
 
-.ending-screen.active{opacity:1;}
+.ending-screen.active{
+  opacity:1;
+}
 
 .restart-btn{
   margin-top:30px;
@@ -150,83 +176,83 @@ button{
 
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
-<!-- START -->
+<!-- Start -->
 <div class="container" id="start">
   <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
-  <button id="btnStart">Bắt đầu</button>
+  <button onclick="showIntro()">Bắt đầu</button>
 </div>
 
-<!-- INTRO -->
+<!-- Intro -->
 <div class="container hidden" id="intro">
   <h3>
   Cùng nhau chơi 1 trò chơi nhỏ để nhận quà nha bé ơi,<br>
   em phải trả lời đúng hết thì mới có quà nhen hehe 💙
   </h3>
-  <button id="btnPlay">Chơi luôn</button>
+  <button onclick="startGame()">Chơi luôn</button>
 </div>
 
-<!-- GAME -->
+<!-- Game -->
 <div class="container hidden" id="game">
-  <div class="progress">
+  <div class="progress" id="progressContainer">
     <div class="bar" id="progressBar"></div>
   </div>
   <h3 id="question"></h3>
   <div id="options"></div>
 </div>
 
-<!-- REWARD -->
+<!-- Reward -->
 <div class="container hidden" id="rewardMessage">
   <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
   <button onclick="showLetter()">Nhận quà nhó</button>
 </div>
 
-<!-- LETTER -->
+<!-- Letter -->
 <div id="letter" class="hidden">
   <div class="letter-scene" id="letterScene">
     <div class="letter-overlay"></div>
     <div class="letter">
       <div class="line" style="animation-delay:0s">Em à,</div><br>
-      <div class="line" style="animation-delay:2s">Cảm ơn em vì đã yêu thương anh.</div><br>
-      <div class="line" style="animation-delay:4s">8/3 này tuy anh không ở cạnh em được,</div><br>
-      <div class="line" style="animation-delay:6s">nhưng em luôn là điều mà anh trân trọng nhất.</div><br>
-      <div class="line" style="animation-delay:8s">Chúc em có một ngày thật ấm áp và hạnh phúc.</div><br>
+      <div class="line" style="animation-delay:2s">Cảm ơn em vì đã luôn dịu dàng và mạnh mẽ.</div><br>
+      <div class="line" style="animation-delay:4s">8/3 này anh không ở cạnh em được,</div><br>
+      <div class="line" style="animation-delay:6s">nhưng em luôn là điều anh trân trọng nhất.</div><br>
+      <div class="line" style="animation-delay:8s">Chúc em một ngày thật ấm áp và hạnh phúc.</div><br>
       <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
     </div>
   </div>
 </div>
 
-<!-- ENDING -->
+<!-- Ending -->
 <div class="ending-screen" id="endingScreen">
   <button class="restart-btn" onclick="location.reload()">Chơi lại</button>
 </div>
 
 <script>
 const questions=[
-{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Buôn Ma Thuột","Hông nhớ nữa"],correct:0},
-{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
-{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
-{q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Không, chúng tôi chung tình"],correct:1},
-{q:"Anh thích ăn gì nhất?",a:["Steak cháy cạnh","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
+{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Đà Nẵng","Huế"],correct:0},
+{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:0},
+{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Không ai"],correct:1},
+{q:"Ai nói yêu trước?",a:["Anh","Em","Cùng lúc","Không nhớ"],correct:0},
+{q:"Tụi mình từng chia tay rồi quay lại mấy lần?",a:["0","1","2","3"],correct:1},
 {q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
-{q:"Điều mà anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng, yêu anh trong tối"],correct:3},
-{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Trăm năm","Mãi mãi"],correct:3}
+{q:"Điều anh trân trọng nhất ở em?",a:["Sự mạnh mẽ","Sự dịu dàng","Cả hai","Nụ cười"],correct:2},
+{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Rất lâu","Mãi mãi"],correct:3}
 ];
 
 let current=0;
 
-document.getElementById("btnStart").addEventListener("click",()=>{
+function showIntro(){
   document.getElementById("start").classList.add("hidden");
   document.getElementById("intro").classList.remove("hidden");
-});
+}
 
-document.getElementById("btnPlay").addEventListener("click",()=>{
+function startGame(){
   document.getElementById("intro").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
-  showQuestion();
   const bg=document.getElementById("bgMusic");
   bg.volume=0.05;
-  bg.play().catch(()=>{});
-});
+  bg.play();
+  showQuestion();
+}
 
 function showQuestion(){
   const q=questions[current];
@@ -244,6 +270,7 @@ function showQuestion(){
 
 function checkAnswer(index,element){
   if(index===questions[current].correct){
+    launchHearts(element);
     fillProgress();
     current++;
     setTimeout(()=>{
@@ -253,7 +280,7 @@ function checkAnswer(index,element){
         document.getElementById("game").classList.add("hidden");
         document.getElementById("rewardMessage").classList.remove("hidden");
       }
-    },800);
+    },1200);
   }else{
     alert("Em nghĩ lại xem nào 💭");
   }
@@ -262,12 +289,39 @@ function checkAnswer(index,element){
 function fillProgress(){
   const percent=((current+1)/questions.length)*100;
   document.getElementById("progressBar").style.width=percent+"%";
+  const progress=document.getElementById("progressContainer");
+  progress.classList.add("shake");
+  setTimeout(()=>progress.classList.remove("shake"),600);
+}
+
+function launchHearts(element){
+  const rect=element.getBoundingClientRect();
+  const progress=document.getElementById("progressContainer").getBoundingClientRect();
+  const colors=["❤️","💗","💖","💘","💕","💓"];
+
+  for(let i=0;i<40;i++){
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
+    heart.style.fontSize=(16+Math.random()*16)+"px";
+    heart.style.left=rect.left+rect.width/2+"px";
+    heart.style.top=rect.top+"px";
+
+    const spread=(Math.random()*200-100);
+    const x=progress.left+progress.width/2-rect.left+spread;
+    const y=progress.top-rect.top-100-(Math.random()*50);
+
+    heart.style.setProperty("--x",x+"px");
+    heart.style.setProperty("--y",y+"px");
+
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),2500);
+  }
 }
 
 function showLetter(){
   document.getElementById("rewardMessage").classList.add("hidden");
   document.getElementById("letter").classList.remove("hidden");
-
   setTimeout(()=>{
     document.getElementById("letterScene").classList.add("active");
   },100);
@@ -275,7 +329,7 @@ function showLetter(){
   setTimeout(()=>{
     document.getElementById("letter").classList.add("hidden");
     document.getElementById("endingScreen").classList.add("active");
-  },17000);
+  },17000); 
 }
 </script>
 
