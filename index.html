@@ -106,6 +106,10 @@ button:hover{ transform:translateY(-2px); }
   z-index:50;
 }
 .letter-scene.active{opacity:1;}
+.letter-scene.fade-out{
+  opacity:0;
+  transition:opacity 2.5s ease;
+}
 .letter-overlay{
   position:absolute;
   inset:0;
@@ -132,28 +136,6 @@ button:hover{ transform:translateY(-2px); }
   to{opacity:1; transform:translateY(0);}
 }
 
-/* Proposal */
-.proposal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.75);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:3rem;
-  color:white;
-  opacity:0;
-  pointer-events:none;
-  transform:scale(0.8);
-  transition:all 1.5s ease;
-  z-index:100;
-}
-.proposal.show{
-  opacity:1;
-  transform:scale(1);
-  pointer-events:auto;
-}
-
 /* Ending */
 .ending{
   position:fixed;
@@ -165,7 +147,7 @@ button:hover{ transform:translateY(-2px); }
   align-items:center;
   opacity:0;
   visibility:hidden;
-  transition:opacity 2s ease;
+  transition:opacity 2.5s ease;
   z-index:200;
 }
 .ending.show{
@@ -230,8 +212,6 @@ button:hover{ transform:translateY(-2px); }
   </div>
 </div>
 
-<div class="proposal" id="proposalText">Anh yêu em 💙</div>
-
 <div class="ending" id="ending">
   <img src="ending.jpg" id="endingImg">
   <button onclick="location.reload()">Chơi lại</button>
@@ -254,6 +234,7 @@ const questions=[
 ];
 
 let current=0;
+let locked=false;
 
 function showIntro(){
   document.getElementById("start").classList.add("hidden");
@@ -261,8 +242,13 @@ function showIntro(){
 }
 
 function startGame(){
+  current=0;
+  locked=false;
+  progressBar.style.width="0%";
+
   document.getElementById("intro").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
+
   bgMusic.volume=0.03;
   bgMusic.play().catch(()=>{});
   showQuestion();
@@ -283,9 +269,14 @@ function showQuestion(){
 }
 
 function checkAnswer(index,element){
-  document.querySelectorAll(".option").forEach(opt=>opt.classList.remove("selected","wrong"));
+  if(locked) return;
+  locked=true;
+
+  document.querySelectorAll(".option")
+    .forEach(opt=>opt.classList.remove("selected","wrong"));
 
   if(index===questions[current].correct){
+
     element.classList.add("selected");
     ting.currentTime=0;
     ting.play().catch(()=>{});
@@ -300,12 +291,18 @@ function checkAnswer(index,element){
         document.getElementById("rewardMessage").classList.remove("hidden");
       },1200);
     }else{
-      setTimeout(showQuestion,1000);
+      setTimeout(()=>{
+        locked=false;
+        showQuestion();
+      },1000);
     }
 
   }else{
     element.classList.add("wrong");
-    setTimeout(()=>element.classList.remove("wrong"),600);
+    setTimeout(()=>{
+      element.classList.remove("wrong");
+      locked=false;
+    },600);
   }
 }
 
@@ -328,21 +325,24 @@ function launchHearts(element){
 function showLetter(){
   document.getElementById("rewardMessage").classList.add("hidden");
   document.getElementById("letter").classList.remove("hidden");
-  setTimeout(()=>document.getElementById("letterScene").classList.add("active"),100);
-  setTimeout(showProposal,15000);
+
+  setTimeout(()=>{
+    document.getElementById("letterScene").classList.add("active");
+  },100);
+
+  setTimeout(startEndingTransition,15000);
 }
 
-function showProposal(){
-  const proposal=document.getElementById("proposalText");
-  proposal.classList.add("show");
-  launchHearts(proposal);
-  setTimeout(showEnding,4000);
-}
-
-function showEnding(){
+function startEndingTransition(){
+  const letterScene=document.getElementById("letterScene");
   const ending=document.getElementById("ending");
+
+  letterScene.classList.add("fade-out");
   ending.classList.add("show");
-  setTimeout(()=>document.getElementById("endingImg").classList.add("focus"),500);
+
+  setTimeout(()=>{
+    document.getElementById("endingImg").classList.add("focus");
+  },800);
 }
 </script>
 
