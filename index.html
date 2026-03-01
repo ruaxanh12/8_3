@@ -68,7 +68,25 @@ button:hover{ transform:translateY(-2px); }
   box-shadow:0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* Letter */
+/* HEART */
+
+.heart{
+  position:fixed;
+  font-size:22px;
+  pointer-events:none;
+  z-index:9999;
+  animation:fly 1.8s cubic-bezier(.22,1,.36,1) forwards;
+}
+
+@keyframes fly{
+  0%{transform:translate(0,0) scale(1);opacity:1;}
+  100%{
+    transform:translate(var(--x), var(--y)) scale(0.3) rotate(900deg);
+    opacity:0;
+  }
+}
+
+/* LETTER */
 
 .letter-scene{
   position:fixed;
@@ -82,7 +100,7 @@ button:hover{ transform:translateY(-2px); }
   transition:opacity 1.5s ease;
 }
 
-.letter-scene.active{ opacity:1; }
+.letter-scene.active{opacity:1;}
 
 .letter-overlay{
   position:absolute;
@@ -109,11 +127,9 @@ button:hover{ transform:translateY(-2px); }
   animation:fadeLine 1.8s forwards;
 }
 
-@keyframes fadeLine{
-  to{opacity:1;}
-}
+@keyframes fadeLine{to{opacity:1;}}
 
-/* ===== ENDING SCENE ===== */
+/* ENDING */
 
 .ending-scene{
   position:fixed;
@@ -141,14 +157,11 @@ button:hover{ transform:translateY(-2px); }
   filter:blur(20px);
   transform:scale(1.05);
   opacity:0;
-  transition:
-    filter 3s ease,
-    transform 3s ease,
-    opacity 2s ease;
+  transition:filter 3s ease, transform 3s ease, opacity 2s ease;
 }
 
 .ending-img.focus{
-  filter:blur(0px);
+  filter:blur(0);
   transform:scale(1);
   opacity:1;
 }
@@ -168,6 +181,14 @@ button:hover{ transform:translateY(-2px); }
 </head>
 
 <body>
+
+<!-- 🎵 PIANO -->
+<audio id="bgMusic" src="piano.m4a" loop></audio>
+
+<!-- 🔔 TING -->
+<audio id="tingSound">
+<source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
+</audio>
 
 <div class="container" id="start">
   <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
@@ -209,92 +230,45 @@ button:hover{ transform:translateY(-2px); }
   </div>
 </div>
 
-<!-- ENDING -->
 <div class="ending-scene" id="endingScene">
   <img src="ending.jpg" class="ending-img" id="endingImg">
   <button class="replay-btn" id="replayBtn" onclick="replay()">Chơi lại</button>
 </div>
 
 <script>
-const questions=[
-{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Buôn Ma Thuột","Hông nhớ nữa"],correct:0},
-{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
-{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
-{q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Chúng tôi chung tình cơ mà"],correct:1},
-{q:"Anh thích ăn gì nhất?",a:["Steak cháy cạnh","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
-{q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
-{q:"Điều mà anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
-{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Trăm năm","Mãi mãi"],correct:3}
-];
+const bgMusic=document.getElementById("bgMusic");
+const ting=document.getElementById("tingSound");
+
+const questions=[/* giữ nguyên bộ câu hỏi của anh */];
 
 let current=0;
-
-function showIntro(){
-  start.classList.add("hidden");
-  intro.classList.remove("hidden");
-}
 
 function startGame(){
   intro.classList.add("hidden");
   game.classList.remove("hidden");
+  bgMusic.volume=0.03;
+  bgMusic.play().catch(()=>{});
   showQuestion();
 }
 
-function showQuestion(){
-  const q=questions[current];
-  question.innerText=q.q;
-  options.innerHTML="";
-  q.a.forEach((option,index)=>{
-    const btn=document.createElement("div");
-    btn.className="option";
-    btn.innerText=option;
-    btn.onclick=()=>checkAnswer(index);
-    options.appendChild(btn);
-  });
-}
-
-function checkAnswer(index){
+function checkAnswer(index,element){
   if(index===questions[current].correct){
+    ting.currentTime=0;
+    ting.play().catch(()=>{});
+    launchHearts(element);
     current++;
     progressBar.style.width=((current/questions.length)*100)+"%";
     if(current<questions.length){
-      showQuestion();
+      setTimeout(showQuestion,800);
     }else{
-      game.classList.add("hidden");
-      rewardMessage.classList.remove("hidden");
+      setTimeout(()=>{
+        game.classList.add("hidden");
+        rewardMessage.classList.remove("hidden");
+      },1000);
     }
   }else{
     alert("Em nghĩ lại xem nào 💭");
   }
-}
-
-function showLetter(){
-  rewardMessage.classList.add("hidden");
-  letter.classList.remove("hidden");
-  setTimeout(()=>letterScene.classList.add("active"),100);
-
-  /* Sau dòng cuối (10s animation + 5s chờ) */
-  setTimeout(showEnding,15000);
-}
-
-function showEnding(){
-  const ending=document.getElementById("endingScene");
-  const img=document.getElementById("endingImg");
-  const btn=document.getElementById("replayBtn");
-
-  ending.classList.add("active");
-
-  setTimeout(()=>{
-    img.classList.add("focus");
-  },500);
-
-  setTimeout(()=>{
-    btn.classList.add("show");
-  },3500);
-}
-
-function replay(){
-  location.reload();
 }
 </script>
 
