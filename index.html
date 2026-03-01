@@ -15,8 +15,6 @@ body{
   color:#444;
 }
 
-/* ===== LAYOUT ===== */
-
 .container{
   min-height:100vh;
   display:flex;
@@ -41,7 +39,7 @@ button{
 }
 button:hover{ transform:translateY(-2px); }
 
-/* ===== PROGRESS ===== */
+/* PROGRESS */
 
 .progress{
   width:80%;
@@ -51,7 +49,6 @@ button:hover{ transform:translateY(-2px); }
   border-radius:30px;
   margin-bottom:25px;
   overflow:hidden;
-  position:relative;
 }
 
 .bar{
@@ -61,13 +58,6 @@ button:hover{ transform:translateY(-2px); }
   transition:width 0.8s cubic-bezier(.22,1,.36,1);
 }
 
-.progress.flash{
-  animation:pulse 0.6s ease;
-}
-@keyframes pulse{
-  50%{box-shadow:0 0 25px rgba(255,0,120,0.6);}
-}
-
 .progress.complete{
   animation:completeGlow 1.2s ease;
 }
@@ -75,7 +65,7 @@ button:hover{ transform:translateY(-2px); }
   50%{box-shadow:0 0 40px rgba(255,0,120,0.9);}
 }
 
-/* ===== OPTION ===== */
+/* OPTION */
 
 .option{
   background:white;
@@ -97,10 +87,9 @@ button:hover{ transform:translateY(-2px); }
 .option.wrong{
   background:#ffd0d0;
   transform:scale(1.05);
-  box-shadow:0 6px 20px rgba(255,0,0,0.4);
 }
 
-/* ===== HEART ===== */
+/* HEART */
 
 .heart{
   position:fixed;
@@ -112,80 +101,35 @@ button:hover{ transform:translateY(-2px); }
 
 @keyframes fly{
   0%{transform:translate(0,0) scale(1);opacity:1;}
-  70%{opacity:1;}
   100%{
     transform:translate(var(--x), var(--y)) scale(0.4) rotate(540deg);
     opacity:0;
   }
 }
 
-/* ===== LETTER ===== */
-
-.letter-scene{
-  position:fixed;
-  inset:0;
-  background:url('background.webp') center/cover no-repeat;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding-top:90px;
-  opacity:0;
-  transition:opacity 1.5s ease;
-}
-.letter-scene.active{opacity:1;}
-
-.letter-overlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.35);
-}
-
-.letter{
-  max-width:520px;
-  background:#fffdf9;
-  padding:40px 32px;
-  border-radius:18px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.15);
-  line-height:1.7;
-  font-family:"Georgia","Times New Roman",serif;
-  font-size:1.5rem;
-  color:#333;
-}
-
-.line{
-  opacity:0;
-  transform:translateY(10px);
-  animation:fadeUp 1.5s forwards;
-}
-@keyframes fadeUp{
-  to{opacity:1; transform:translateY(0);}
-}
-
-/* ===== PROPOSAL TEXT ===== */
+/* PROPOSAL */
 
 .proposal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.7);
   display:flex;
   justify-content:center;
   align-items:center;
   font-size:3rem;
   color:white;
-  font-weight:bold;
   opacity:0;
   transform:scale(0.8);
   transition:all 1.5s ease;
   z-index:1000;
 }
-
 .proposal.show{
   opacity:1;
   transform:scale(1);
-  text-shadow:0 0 30px rgba(255,255,255,0.9);
+  text-shadow:0 0 40px white;
 }
 
-/* ===== ENDING ===== */
+/* ENDING */
 
 .ending{
   position:fixed;
@@ -199,12 +143,10 @@ button:hover{ transform:translateY(-2px); }
   visibility:hidden;
   transition:opacity 2s ease;
 }
-
 .ending.show{
   opacity:1;
   visibility:visible;
 }
-
 .ending img{
   max-width:85%;
   border-radius:20px;
@@ -232,12 +174,12 @@ button:hover{ transform:translateY(-2px); }
 </div>
 
 <div class="container hidden" id="intro">
-  <h3>Chơi trò nhỏ để nhận quà nha 💙</h3>
+  <h3>Cùng anh chơi 1 trò này nha, em phải trả lời đúng hết thì mới có quà đó hehe 💙</h3>
   <button onclick="startGame()">Chơi luôn</button>
 </div>
 
 <div class="container hidden" id="game">
-  <div class="progress" id="progressContainer">
+  <div class="progress">
     <div class="bar" id="progressBar"></div>
   </div>
   <h3 id="question"></h3>
@@ -246,21 +188,7 @@ button:hover{ transform:translateY(-2px); }
 
 <div class="container hidden" id="rewardMessage">
   <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
-  <button onclick="showLetter()">Nhận quà nhó</button>
-</div>
-
-<div id="letter" class="hidden">
-  <div class="letter-scene" id="letterScene">
-    <div class="letter-overlay"></div>
-    <div class="letter">
-      <div class="line" style="animation-delay:0s">Em à,</div>
-      <div class="line" style="animation-delay:2s">Cảm ơn em vì đã yêu thương anh.</div>
-      <div class="line" style="animation-delay:4s">8/3 này tuy anh không ở cạnh em được,</div>
-      <div class="line" style="animation-delay:6s">nhưng em luôn là điều mà anh trân trọng nhất.</div>
-      <div class="line" style="animation-delay:8s">Chúc em có một ngày thật ấm áp và hạnh phúc.</div>
-      <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
-    </div>
-  </div>
+  <button onclick="showProposal()">Nhận quà nhó</button>
 </div>
 
 <div class="proposal" id="proposalText">Anh yêu em 💙</div>
@@ -274,17 +202,28 @@ button:hover{ transform:translateY(-2px); }
 const bgMusic=document.getElementById("bgMusic");
 const ting=document.getElementById("tingSound");
 const progressBar=document.getElementById("progressBar");
-const progressContainer=document.getElementById("progressContainer");
 
-const questions=[ /* giữ nguyên bộ câu hỏi của em */ ];
+const questions=[
+{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Buôn Ma Thuột","Hông nhớ nữa"],correct:0},
+{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
+{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
+{q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Chúng tôi chung tình cơ mà"],correct:1},
+{q:"Anh thích ăn gì nhất?",a:["Steak cháy cạnh","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
+{q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
+{q:"Điều mà anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
+{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Trăm năm","Mãi mãi"],correct:3}
+];
 
 let current=0;
 
-function showIntro(){ start.classList.add("hidden"); intro.classList.remove("hidden"); }
+function showIntro(){
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("intro").classList.remove("hidden");
+}
 
 function startGame(){
-  intro.classList.add("hidden");
-  game.classList.remove("hidden");
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
   bgMusic.volume=0.03;
   bgMusic.play();
   showQuestion();
@@ -292,14 +231,15 @@ function startGame(){
 
 function showQuestion(){
   const q=questions[current];
-  question.innerText=q.q;
-  options.innerHTML="";
+  document.getElementById("question").innerText=q.q;
+  const optionsDiv=document.getElementById("options");
+  optionsDiv.innerHTML="";
   q.a.forEach((option,index)=>{
     const btn=document.createElement("div");
     btn.className="option";
     btn.innerText=option;
     btn.onclick=()=>checkAnswer(index,btn);
-    options.appendChild(btn);
+    optionsDiv.appendChild(btn);
   });
 }
 
@@ -316,14 +256,11 @@ function checkAnswer(index,element){
     progressBar.style.width=(current/questions.length*100)+"%";
 
     if(current===questions.length){
-      progressContainer.classList.add("complete");
       setTimeout(()=>{
-        game.classList.add("hidden");
-        rewardMessage.classList.remove("hidden");
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("rewardMessage").classList.remove("hidden");
       },1200);
-    } else {
-      progressContainer.classList.add("flash");
-      setTimeout(()=>progressContainer.classList.remove("flash"),600);
+    }else{
       setTimeout(showQuestion,1000);
     }
 
@@ -349,22 +286,16 @@ function launchHearts(element){
   }
 }
 
-function showLetter(){
-  rewardMessage.classList.add("hidden");
-  letter.classList.remove("hidden");
-  setTimeout(()=>letterScene.classList.add("active"),100);
-  setTimeout(showProposal,15000);
-}
-
 function showProposal(){
-  proposalText.classList.add("show");
-  launchHearts(proposalText);
+  document.getElementById("rewardMessage").classList.add("hidden");
+  document.getElementById("proposalText").classList.add("show");
+  launchHearts(document.getElementById("proposalText"));
   setTimeout(showEnding,4000);
 }
 
 function showEnding(){
-  ending.classList.add("show");
-  setTimeout(()=>endingImg.classList.add("focus"),500);
+  document.getElementById("ending").classList.add("show");
+  setTimeout(()=>document.getElementById("endingImg").classList.add("focus"),500);
 }
 </script>
 
