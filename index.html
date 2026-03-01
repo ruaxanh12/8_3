@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8/3 Dành Cho Em</title>
+<title>8/3 Dành Cho Em 💙</title>
 
 <style>
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  background:linear-gradient(135deg,#fff5f7,#fdeff4);
-  text-align:center;
+  background:linear-gradient(135deg,#fff6f8,#fdeef4);
   overflow:hidden;
+  text-align:center;
   color:#444;
 }
 
@@ -22,12 +22,13 @@ body{
   justify-content:center;
   align-items:center;
   padding:20px;
+  position:relative;
 }
 
 button{
-  padding:12px 24px;
+  padding:12px 26px;
   border:none;
-  border-radius:25px;
+  border-radius:30px;
   background:#ff7a9e;
   color:white;
   font-size:1rem;
@@ -61,31 +62,58 @@ button{
   border-radius:15px;
   cursor:pointer;
   width:260px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  transition:0.3s;
 }
 
 .option:hover{
   background:#ffe6ec;
+  transform:translateY(-2px);
 }
 
-.flower{
-  font-size:80px;
-  animation:fadeIn 1.5s ease forwards;
+/* Confetti */
+.confetti{
+  position:fixed;
+  width:8px;
+  height:8px;
+  background:red;
+  top:-10px;
+  animation:fall 3s linear forwards;
 }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:scale(0.8);}
-  to{opacity:1; transform:scale(1);}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(720deg);}
 }
 
+/* Baby flower */
+.baby{
+  position:absolute;
+  font-size:20px;
+  opacity:0.7;
+  animation:float 6s infinite ease-in-out;
+}
+
+@keyframes float{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-20px);}
+  100%{transform:translateY(0);}
+}
+
+/* Letter */
 .letter{
   max-width:500px;
   background:#fffdf9;
   padding:25px;
-  border-radius:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+  border-radius:15px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.1);
   font-family:cursive;
-  line-height:1.6;
+  line-height:1.8;
+  opacity:0;
+  animation:fadeIn 2s forwards;
+}
+
+@keyframes fadeIn{
+  to{opacity:1;}
 }
 </style>
 </head>
@@ -110,78 +138,57 @@ button{
 </div>
 
 <div class="container hidden" id="flowers">
-  <div class="flower">🌹🤍🌹</div>
+
+  <!-- Baby floating -->
+  <div class="baby" style="top:10%;left:20%;">🤍</div>
+  <div class="baby" style="top:20%;left:70%;">🤍</div>
+  <div class="baby" style="top:70%;left:30%;">🤍</div>
+
+  <!-- SVG Bouquet -->
+  <svg width="200" height="250" viewBox="0 0 200 250">
+    <circle cx="100" cy="80" r="30" fill="#e63946"/>
+    <circle cx="70" cy="100" r="25" fill="#ff758f"/>
+    <circle cx="130" cy="100" r="25" fill="#ff758f"/>
+    <line x1="100" y1="110" x2="100" y2="200" stroke="#2a9d8f" stroke-width="4"/>
+    <line x1="70" y1="125" x2="80" y2="200" stroke="#2a9d8f" stroke-width="3"/>
+    <line x1="130" y1="125" x2="120" y2="200" stroke="#2a9d8f" stroke-width="3"/>
+  </svg>
+
   <p>Giữa rất nhiều điều trên thế giới này… anh vẫn chọn em.</p>
   <button onclick="showLetter()">Mở thư ✉️</button>
 </div>
 
 <div class="container hidden" id="letter">
   <div class="letter">
-    Em à,  
-    <br><br>
-    Cảm ơn em vì đã luôn dịu dàng, mạnh mẽ và kiên nhẫn.  
-    8/3 này anh không ở cạnh em được,  
-    nhưng anh muốn em biết rằng em luôn là điều anh trân trọng nhất.  
-    <br><br>
-    Chúc em một ngày thật ấm áp và hạnh phúc.  
-    <br><br>
-    Anh yêu em 💙
+    <div>Em à,</div><br>
+    <div>Cảm ơn em vì đã luôn dịu dàng và mạnh mẽ.</div><br>
+    <div>8/3 này anh không ở cạnh em được,</div><br>
+    <div>nhưng em luôn là điều anh trân trọng nhất.</div><br>
+    <div>Chúc em một ngày thật ấm áp.</div><br>
+    <div>Anh yêu em 💙</div>
   </div>
 </div>
 
 <script>
-const questions = [
-{
-q:"Lần đầu tụi mình gặp nhau ở đâu?",
-a:["Hà Nội","Sài Gòn","Đà Nẵng","Huế"],
-correct:0
-},
-{
-q:"Ai là người chủ động nhắn tin trước?",
-a:["Anh","Em","Cả hai","Không nhớ"],
-correct:0
-},
-{
-q:"Món em hay ăn khi buồn là gì?",
-a:["Trà sữa","Bánh ngọt","Mì cay","Chocolate"],
-correct:1
-},
-{
-q:"Ai hay giận dỗi hơn?",
-a:["Anh","Em","Cả hai","Không ai"],
-correct:1
-},
-{
-q:"Tụi mình đã từng chia tay rồi quay lại bao nhiêu lần?",
-a:["0","1","2","3"],
-correct:1
-},
-{
-q:"Ai nói yêu trước?",
-a:["Anh","Em","Cùng lúc","Không nhớ"],
-correct:0
-},
-{
-q:"Màu anh thích em mặc nhất?",
-a:["Trắng","Đen","Hồng","Xanh"],
-correct:2
-},
-{
-q:"Điều anh trân trọng nhất ở em là gì?",
-a:["Sự mạnh mẽ","Sự dịu dàng","Cả hai","Nụ cười"],
-correct:2
-}
+const questions=[
+{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Đà Nẵng","Huế"],correct:0},
+{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:0},
+{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Không ai"],correct:1},
+{q:"Ai nói yêu trước?",a:["Anh","Em","Cùng lúc","Không nhớ"],correct:0},
+{q:"Tụi mình từng chia tay rồi quay lại mấy lần?",a:["0","1","2","3"],correct:1},
+{q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
+{q:"Điều anh trân trọng nhất ở em?",a:["Sự mạnh mẽ","Sự dịu dàng","Cả hai","Nụ cười"],correct:2},
+{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Rất lâu","Mãi mãi"],correct:3}
 ];
 
 let current=0;
-let score=0;
 
 function startGame(){
   document.getElementById("start").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
 
   const bg=document.getElementById("bgMusic");
-  bg.volume=0.03;
+  bg.volume=0.02; // studio mix
   bg.play();
 
   showQuestion();
@@ -192,7 +199,6 @@ function showQuestion(){
   document.getElementById("question").innerText=q.q;
   const optionsDiv=document.getElementById("options");
   optionsDiv.innerHTML="";
-
   q.a.forEach((option,index)=>{
     const btn=document.createElement("div");
     btn.className="option";
@@ -204,13 +210,13 @@ function showQuestion(){
 
 function checkAnswer(index){
   if(index===questions[current].correct){
-    score++;
     current++;
     updateProgress();
 
     if(current<questions.length){
       showQuestion();
     }else{
+      launchConfetti();
       document.getElementById("game").classList.add("hidden");
       document.getElementById("reward").classList.remove("hidden");
     }
@@ -222,6 +228,17 @@ function checkAnswer(index){
 function updateProgress(){
   const percent=(current/questions.length)*100;
   document.getElementById("progressBar").style.width=percent+"%";
+}
+
+function launchConfetti(){
+  for(let i=0;i<50;i++){
+    const conf=document.createElement("div");
+    conf.className="confetti";
+    conf.style.left=Math.random()*100+"vw";
+    conf.style.background=`hsl(${Math.random()*360},70%,60%)`;
+    document.body.appendChild(conf);
+    setTimeout(()=>conf.remove(),3000);
+  }
 }
 
 function showFlowers(){
