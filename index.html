@@ -182,10 +182,8 @@ button:hover{ transform:translateY(-2px); }
 
 <body>
 
-<!-- 🎵 PIANO -->
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
-<!-- 🔔 TING -->
 <audio id="tingSound">
 <source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
 </audio>
@@ -239,16 +237,44 @@ button:hover{ transform:translateY(-2px); }
 const bgMusic=document.getElementById("bgMusic");
 const ting=document.getElementById("tingSound");
 
-const questions=[/* giữ nguyên bộ câu hỏi của anh */];
+const questions=[
+{q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Buôn Ma Thuột","Hông nhớ nữa"],correct:0},
+{q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
+{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
+{q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Chúng tôi chung tình cơ mà"],correct:1},
+{q:"Anh thích ăn gì nhất?",a:["Steak cháy cạnh","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
+{q:"Màu anh thích em mặc nhất?",a:["Trắng","Đen","Hồng","Xanh"],correct:2},
+{q:"Điều mà anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
+{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Trăm năm","Mãi mãi"],correct:3}
+];
 
 let current=0;
 
+function showIntro(){
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("intro").classList.remove("hidden");
+}
+
 function startGame(){
-  intro.classList.add("hidden");
-  game.classList.remove("hidden");
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
   bgMusic.volume=0.03;
   bgMusic.play().catch(()=>{});
   showQuestion();
+}
+
+function showQuestion(){
+  const q=questions[current];
+  document.getElementById("question").innerText=q.q;
+  const optionsDiv=document.getElementById("options");
+  optionsDiv.innerHTML="";
+  q.a.forEach((option,index)=>{
+    const btn=document.createElement("div");
+    btn.className="option";
+    btn.innerText=option;
+    btn.onclick=()=>checkAnswer(index,btn);
+    optionsDiv.appendChild(btn);
+  });
 }
 
 function checkAnswer(index,element){
@@ -257,18 +283,51 @@ function checkAnswer(index,element){
     ting.play().catch(()=>{});
     launchHearts(element);
     current++;
-    progressBar.style.width=((current/questions.length)*100)+"%";
+    document.getElementById("progressBar").style.width=((current/questions.length)*100)+"%";
     if(current<questions.length){
       setTimeout(showQuestion,800);
     }else{
       setTimeout(()=>{
-        game.classList.add("hidden");
-        rewardMessage.classList.remove("hidden");
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("rewardMessage").classList.remove("hidden");
       },1000);
     }
   }else{
     alert("Em nghĩ lại xem nào 💭");
   }
+}
+
+function launchHearts(element){
+  const rect=element.getBoundingClientRect();
+  const colors=["❤️","💗","💖","💘","💕","💓"];
+  for(let i=0;i<30;i++){
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
+    heart.style.left=rect.left+rect.width/2+"px";
+    heart.style.top=rect.top+"px";
+    heart.style.setProperty("--x",(Math.random()*300-150)+"px");
+    heart.style.setProperty("--y",-(Math.random()*300+100)+"px");
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),1800);
+  }
+}
+
+function showLetter(){
+  document.getElementById("rewardMessage").classList.add("hidden");
+  document.getElementById("letter").classList.remove("hidden");
+  setTimeout(()=>document.getElementById("letterScene").classList.add("active"),100);
+  setTimeout(showEnding,15000);
+}
+
+function showEnding(){
+  document.getElementById("endingScene").classList.add("active");
+  setTimeout(()=>document.getElementById("endingImg").classList.add("focus"),500);
+  setTimeout(()=>document.getElementById("replayBtn").classList.add("show"),3500);
+}
+
+function replay(){
+  location.reload();
 }
 </script>
 
