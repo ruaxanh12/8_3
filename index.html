@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8/3 Cinematic Final 💙</title>
+<title>8/3 Ultimate Cinematic 💙</title>
 
 <style>
 body{
@@ -39,13 +39,16 @@ button{
   cursor:pointer;
   margin-top:20px;
   box-shadow:0 6px 18px rgba(255,122,158,0.4);
+  transition:0.3s;
 }
+
+button:hover{ transform:translateY(-2px); }
 
 /* Progress */
 .progress{
   width:80%;
   max-width:400px;
-  height:16px;
+  height:14px;
   background:#ffd6df;
   border-radius:10px;
   margin-bottom:25px;
@@ -57,39 +60,52 @@ button{
   height:100%;
   width:0%;
   background:#ff7a9e;
-  transition:width 1s cubic-bezier(.22,1,.36,1);
+  transition:width 0.9s cubic-bezier(.22,1,.36,1);
 }
 
 .progress.shake{
-  animation:shake 0.6s ease;
+  animation:shake 0.5s ease;
+}
+
+.progress.glow{
+  box-shadow:0 0 20px rgba(255,120,150,0.8);
+  transition:box-shadow 0.6s ease;
 }
 
 @keyframes shake{
   0%{transform:translateX(0)}
-  25%{transform:translateX(-3px)}
-  50%{transform:translateX(3px)}
-  75%{transform:translateX(-2px)}
+  20%{transform:translateX(-4px)}
+  40%{transform:translateX(4px)}
+  60%{transform:translateX(-3px)}
+  80%{transform:translateX(3px)}
   100%{transform:translateX(0)}
 }
 
 /* Options */
 .option{
   background:white;
-  padding:14px;
-  margin:10px 0;
+  padding:12px;
+  margin:8px 0;
   border-radius:15px;
   cursor:pointer;
-  width:270px;
+  width:260px;
   box-shadow:0 4px 12px rgba(0,0,0,0.05);
   transition:0.3s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Hearts */
+.option.selected{
+  background:#ffe6ec;
+}
+
+/* Hearts Ultra */
 .heart{
   position:fixed;
+  font-size:22px;
   pointer-events:none;
   z-index:9999;
-  animation:fly 2.5s cubic-bezier(.22,1,.36,1) forwards;
+  animation:fly 1.8s cubic-bezier(.22,1,.36,1) forwards;
+  filter:drop-shadow(0 0 6px rgba(255,120,150,0.6));
 }
 
 @keyframes fly{
@@ -97,8 +113,11 @@ button{
     transform:translate(0,0) scale(1);
     opacity:1;
   }
+  60%{
+    opacity:1;
+  }
   100%{
-    transform:translate(var(--x), var(--y)) scale(0.4) rotate(720deg);
+    transform:translate(var(--x), var(--y)) scale(0.3) rotate(900deg);
     opacity:0;
   }
 }
@@ -111,7 +130,7 @@ button{
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  padding-top:80px;
+  padding-top:90px;
   opacity:0;
   transition:opacity 1.5s ease;
 }
@@ -121,53 +140,28 @@ button{
 .letter-overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.4);
+  background:rgba(0,0,0,0.35);
 }
 
 .letter{
-  max-width:560px;
+  max-width:520px;
   background:#fffdf9;
-  padding:35px;
-  border-radius:20px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.2);
-  line-height:2;
-  font-size:18px;
-  font-family:Georgia, serif;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.15);
+  line-height:1.8;
+  font-family:cursive;
   position:relative;
   z-index:2;
 }
 
 .line{
   opacity:0;
-  animation:fadeLine 2s forwards;
+  animation:fadeLine 1.8s forwards;
 }
 
 @keyframes fadeLine{
   to{opacity:1;}
-}
-
-/* Ending image */
-.ending-screen{
-  position:fixed;
-  inset:0;
-  background:url('ending.img') center/cover no-repeat;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  opacity:0;
-  transition:opacity 2s ease;
-  z-index:10;
-}
-
-.ending-screen.active{
-  opacity:1;
-}
-
-.restart-btn{
-  margin-top:30px;
-  background:white;
-  color:#ff5c8a;
 }
 </style>
 </head>
@@ -176,13 +170,16 @@ button{
 
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
-<!-- Start -->
+<!-- tiny correct sound -->
+<audio id="tingSound">
+  <source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
+</audio>
+
 <div class="container" id="start">
   <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
   <button onclick="showIntro()">Bắt đầu</button>
 </div>
 
-<!-- Intro -->
 <div class="container hidden" id="intro">
   <h3>
   Cùng nhau chơi 1 trò chơi nhỏ để nhận quà nha bé ơi,<br>
@@ -191,7 +188,6 @@ button{
   <button onclick="startGame()">Chơi luôn</button>
 </div>
 
-<!-- Game -->
 <div class="container hidden" id="game">
   <div class="progress" id="progressContainer">
     <div class="bar" id="progressBar"></div>
@@ -200,13 +196,11 @@ button{
   <div id="options"></div>
 </div>
 
-<!-- Reward -->
 <div class="container hidden" id="rewardMessage">
   <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
   <button onclick="showLetter()">Nhận quà nhó</button>
 </div>
 
-<!-- Letter -->
 <div id="letter" class="hidden">
   <div class="letter-scene" id="letterScene">
     <div class="letter-overlay"></div>
@@ -219,11 +213,6 @@ button{
       <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
     </div>
   </div>
-</div>
-
-<!-- Ending -->
-<div class="ending-screen" id="endingScreen">
-  <button class="restart-btn" onclick="location.reload()">Chơi lại</button>
 </div>
 
 <script>
@@ -249,7 +238,7 @@ function startGame(){
   document.getElementById("intro").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
   const bg=document.getElementById("bgMusic");
-  bg.volume=0.05;
+  bg.volume=0.02;
   bg.play();
   showQuestion();
 }
@@ -270,6 +259,7 @@ function showQuestion(){
 
 function checkAnswer(index,element){
   if(index===questions[current].correct){
+    playTing();
     launchHearts(element);
     fillProgress();
     current++;
@@ -286,12 +276,24 @@ function checkAnswer(index,element){
   }
 }
 
+function playTing(){
+  const audio=document.getElementById("tingSound");
+  if(audio) audio.play().catch(()=>{});
+}
+
 function fillProgress(){
   const percent=((current+1)/questions.length)*100;
-  document.getElementById("progressBar").style.width=percent+"%";
+  const bar=document.getElementById("progressBar");
+  bar.style.width=percent+"%";
+
   const progress=document.getElementById("progressContainer");
   progress.classList.add("shake");
-  setTimeout(()=>progress.classList.remove("shake"),600);
+  progress.classList.add("glow");
+
+  setTimeout(()=>{
+    progress.classList.remove("shake");
+    progress.classList.remove("glow");
+  },600);
 }
 
 function launchHearts(element){
@@ -299,37 +301,29 @@ function launchHearts(element){
   const progress=document.getElementById("progressContainer").getBoundingClientRect();
   const colors=["❤️","💗","💖","💘","💕","💓"];
 
-  for(let i=0;i<40;i++){
+  for(let i=0;i<35;i++){
     const heart=document.createElement("div");
     heart.className="heart";
     heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
-    heart.style.fontSize=(16+Math.random()*16)+"px";
     heart.style.left=rect.left+rect.width/2+"px";
     heart.style.top=rect.top+"px";
 
-    const spread=(Math.random()*200-100);
+    const spread=Math.random()*200-100;
     const x=progress.left+progress.width/2-rect.left+spread;
-    const y=progress.top-rect.top-100-(Math.random()*50);
+    const y=progress.top-rect.top-80-(Math.random()*40);
 
     heart.style.setProperty("--x",x+"px");
     heart.style.setProperty("--y",y+"px");
 
     document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),2500);
+    setTimeout(()=>heart.remove(),1800);
   }
 }
 
 function showLetter(){
   document.getElementById("rewardMessage").classList.add("hidden");
   document.getElementById("letter").classList.remove("hidden");
-  setTimeout(()=>{
-    document.getElementById("letterScene").classList.add("active");
-  },100);
-
-  setTimeout(()=>{
-    document.getElementById("letter").classList.add("hidden");
-    document.getElementById("endingScreen").classList.add("active");
-  },17000); 
+  setTimeout(()=>document.getElementById("letterScene").classList.add("active"),100);
 }
 </script>
 
