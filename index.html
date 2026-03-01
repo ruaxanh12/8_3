@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8/3 For My Love 💙</title>
+<title>8/3 Cinematic Max 💙</title>
 
 <style>
 body{
@@ -15,6 +15,8 @@ body{
   color:#444;
 }
 
+/* ===== LAYOUT ===== */
+
 .container{
   min-height:100vh;
   display:flex;
@@ -23,7 +25,6 @@ body{
   align-items:center;
   padding:20px;
 }
-
 .hidden{display:none;}
 
 button{
@@ -64,7 +65,14 @@ button:hover{ transform:translateY(-2px); }
   animation:pulse 0.6s ease;
 }
 @keyframes pulse{
-  50%{box-shadow:0 0 20px rgba(255,0,90,0.5);}
+  50%{box-shadow:0 0 25px rgba(255,0,120,0.6);}
+}
+
+.progress.complete{
+  animation:completeGlow 1s ease;
+}
+@keyframes completeGlow{
+  50%{box-shadow:0 0 35px rgba(255,0,120,0.9);}
 }
 
 /* ===== OPTION ===== */
@@ -77,57 +85,42 @@ button:hover{ transform:translateY(-2px); }
   cursor:pointer;
   width:260px;
   box-shadow:0 4px 12px rgba(0,0,0,0.05);
-  transition:0.2s;
+  transition:all 0.25s ease;
 }
-.option:hover{
-  transform:translateY(-2px);
+
+.option.selected{
+  background:#ffd6e6;
+  transform:scale(1.05);
+  box-shadow:0 6px 20px rgba(255,0,120,0.4);
+}
+
+.option.wrong{
+  background:#ffd0d0;
+  transform:scale(1.05);
+  box-shadow:0 6px 20px rgba(255,0,0,0.4);
 }
 
 /* ===== HEART ===== */
 
 .heart{
   position:fixed;
-  font-size:24px;
+  font-size:26px;
   pointer-events:none;
   z-index:9999;
-  animation:fly 3.2s cubic-bezier(.22,1,.36,1) forwards;
-  opacity:0.95;
+  animation:fly 3.5s cubic-bezier(.22,1,.36,1) forwards;
+  filter:drop-shadow(0 0 8px rgba(255,0,120,0.5));
 }
 
 @keyframes fly{
-  0%{
-    transform:translate(0,0) scale(1);
-    opacity:1;
-  }
-  60%{
-    opacity:1;
-  }
+  0%{transform:translate(0,0) scale(1);opacity:1;}
+  70%{opacity:1;}
   100%{
-    transform:translate(var(--x), var(--y)) scale(0.5) rotate(540deg);
+    transform:translate(var(--x), var(--y)) scale(0.4) rotate(540deg);
     opacity:0;
   }
 }
 
 /* ===== LETTER ===== */
-
-.letter-scene{
-  position:fixed;
-  inset:0;
-  background:url('background.webp') center/cover no-repeat;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding-top:90px;
-  opacity:0;
-  transition:opacity 1.5s ease;
-}
-.letter-scene.active{opacity:1;}
-
-.letter-overlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.35);
-}
 
 .letter{
   max-width:520px;
@@ -137,19 +130,18 @@ button:hover{ transform:translateY(-2px); }
   box-shadow:0 20px 50px rgba(0,0,0,0.15);
   line-height:1.7;
   font-family:"Georgia","Times New Roman",serif;
-  font-size:1.45rem;
-  letter-spacing:0.3px;
+  font-size:1.5rem;
   color:#333;
-  position:relative;
-  z-index:2;
 }
 
 .line{
   opacity:0;
-  margin:8px 0;
-  animation:fadeLine 1.8s forwards;
+  transform:translateY(10px);
+  animation:fadeUp 1.5s forwards;
 }
-@keyframes fadeLine{to{opacity:1;}}
+@keyframes fadeUp{
+  to{opacity:1; transform:translateY(0);}
+}
 
 /* ===== ENDING ===== */
 
@@ -186,15 +178,17 @@ button:hover{ transform:translateY(-2px); }
   opacity:1;
 }
 
-.replay-btn{
-  margin-top:35px;
+.flash-light{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle,rgba(255,255,255,0.4),transparent 60%);
   opacity:0;
-  transform:translateY(30px);
-  transition:all 1.2s ease;
+  animation:flashLight 1.2s ease forwards;
 }
-.replay-btn.show{
-  opacity:1;
-  transform:translateY(0);
+@keyframes flashLight{
+  50%{opacity:1;}
+  100%{opacity:0;}
 }
 </style>
 </head>
@@ -212,10 +206,7 @@ button:hover{ transform:translateY(-2px); }
 </div>
 
 <div class="container hidden" id="intro">
-  <h3>
-  Cùng nhau chơi 1 trò chơi nhỏ để nhận quà nha bé ơi,<br>
-  em phải trả lời đúng hết thì mới có quà nhen hehe 💙
-  </h3>
+  <h3>Chơi trò nhỏ để nhận quà nha 💙</h3>
   <button onclick="startGame()">Chơi luôn</button>
 </div>
 
@@ -225,30 +216,6 @@ button:hover{ transform:translateY(-2px); }
   </div>
   <h3 id="question"></h3>
   <div id="options"></div>
-</div>
-
-<div class="container hidden" id="rewardMessage">
-  <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
-  <button onclick="showLetter()">Nhận quà nhó</button>
-</div>
-
-<div id="letter" class="hidden">
-  <div class="letter-scene" id="letterScene">
-    <div class="letter-overlay"></div>
-    <div class="letter">
-      <div class="line" style="animation-delay:0s">Em à,</div>
-      <div class="line" style="animation-delay:2s">Cảm ơn em vì đã yêu thương anh.</div>
-      <div class="line" style="animation-delay:4s">8/3 này tuy anh không ở cạnh em được,</div>
-      <div class="line" style="animation-delay:6s">nhưng em luôn là điều mà anh trân trọng nhất.</div>
-      <div class="line" style="animation-delay:8s">Chúc em có một ngày thật ấm áp và hạnh phúc.</div>
-      <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
-    </div>
-  </div>
-</div>
-
-<div class="ending-scene" id="endingScene">
-  <img src="ending.jpg" class="ending-img" id="endingImg">
-  <button class="replay-btn" id="replayBtn" onclick="location.reload()">Chơi lại</button>
 </div>
 
 <script>
@@ -297,8 +264,10 @@ function showQuestion(){
 }
 
 function checkAnswer(index,element){
-  if(index===questions[current].correct){
+  document.querySelectorAll(".option").forEach(opt=>opt.classList.remove("selected","wrong"));
 
+  if(index===questions[current].correct){
+    element.classList.add("selected");
     ting.currentTime=0;
     ting.play().catch(()=>{});
     launchHearts(element);
@@ -314,24 +283,24 @@ function checkAnswer(index,element){
     progressContainer.classList.add("flash");
     setTimeout(()=>progressContainer.classList.remove("flash"),600);
 
+    if(current===questions.length){
+      progressContainer.classList.add("complete");
+    }
+
     if(current<questions.length){
-      setTimeout(showQuestion,800);
-    }else{
-      setTimeout(()=>{
-        game.classList.add("hidden");
-        rewardMessage.classList.remove("hidden");
-      },900);
+      setTimeout(showQuestion,1000);
     }
 
   }else{
-    alert("Em nghĩ lại xem nào 💭");
+    element.classList.add("wrong");
+    setTimeout(()=>element.classList.remove("wrong"),600);
   }
 }
 
 function launchHearts(element){
   const rect=element.getBoundingClientRect();
   const colors=["❤️","💗","💖","💘","💕","💓"];
-  for(let i=0;i<22;i++){
+  for(let i=0;i<20;i++){
     const heart=document.createElement("div");
     heart.className="heart";
     heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
@@ -340,31 +309,8 @@ function launchHearts(element){
     heart.style.setProperty("--x",(Math.random()*250-125)+"px");
     heart.style.setProperty("--y",-(Math.random()*400+200)+"px");
     document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),3200);
+    setTimeout(()=>heart.remove(),3500);
   }
-}
-
-function showLetter(){
-  rewardMessage.classList.add("hidden");
-  letter.classList.remove("hidden");
-  setTimeout(()=>letterScene.classList.add("active"),100);
-  setTimeout(showEnding,15000);
-}
-
-function showEnding(){
-  endingScene.classList.add("active");
-
-  let fade=setInterval(()=>{
-    if(bgMusic.volume>0.005){
-      bgMusic.volume-=0.005;
-    }else{
-      bgMusic.pause();
-      clearInterval(fade);
-    }
-  },150);
-
-  setTimeout(()=>endingImg.classList.add("focus"),500);
-  setTimeout(()=>replayBtn.classList.add("show"),3500);
 }
 </script>
 
