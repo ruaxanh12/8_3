@@ -77,21 +77,33 @@ button:hover{ transform:translateY(-2px); }
   cursor:pointer;
   width:260px;
   box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  transition:0.2s;
+}
+.option:hover{
+  transform:translateY(-2px);
 }
 
 /* ===== HEART ===== */
 
 .heart{
   position:fixed;
-  font-size:22px;
+  font-size:24px;
   pointer-events:none;
   z-index:9999;
-  animation:fly 1.8s cubic-bezier(.22,1,.36,1) forwards;
+  animation:fly 3.2s cubic-bezier(.22,1,.36,1) forwards;
+  opacity:0.95;
 }
+
 @keyframes fly{
-  0%{transform:translate(0,0) scale(1);opacity:1;}
+  0%{
+    transform:translate(0,0) scale(1);
+    opacity:1;
+  }
+  60%{
+    opacity:1;
+  }
   100%{
-    transform:translate(var(--x), var(--y)) scale(0.3) rotate(900deg);
+    transform:translate(var(--x), var(--y)) scale(0.5) rotate(540deg);
     opacity:0;
   }
 }
@@ -120,19 +132,21 @@ button:hover{ transform:translateY(-2px); }
 .letter{
   max-width:520px;
   background:#fffdf9;
-  padding:35px 30px;
+  padding:40px 32px;
   border-radius:18px;
   box-shadow:0 20px 50px rgba(0,0,0,0.15);
-  line-height:1.5;
-  font-family:"Segoe Script","Comic Sans MS",cursive;
-  font-size:1.35rem;
+  line-height:1.7;
+  font-family:"Georgia","Times New Roman",serif;
+  font-size:1.45rem;
+  letter-spacing:0.3px;
+  color:#333;
   position:relative;
   z-index:2;
 }
 
 .line{
   opacity:0;
-  margin:6px 0;
+  margin:8px 0;
   animation:fadeLine 1.8s forwards;
 }
 @keyframes fadeLine{to{opacity:1;}}
@@ -199,7 +213,7 @@ button:hover{ transform:translateY(-2px); }
 
 <div class="container hidden" id="intro">
   <h3>
-  Cùng anh chơi 1 trò chơi nhé bae,<br>
+  Cùng nhau chơi 1 trò chơi nhỏ để nhận quà nha bé ơi,<br>
   em phải trả lời đúng hết thì mới có quà nhen hehe 💙
   </h3>
   <button onclick="startGame()">Chơi luôn</button>
@@ -317,16 +331,16 @@ function checkAnswer(index,element){
 function launchHearts(element){
   const rect=element.getBoundingClientRect();
   const colors=["❤️","💗","💖","💘","💕","💓"];
-  for(let i=0;i<25;i++){
+  for(let i=0;i<22;i++){
     const heart=document.createElement("div");
     heart.className="heart";
     heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
     heart.style.left=rect.left+rect.width/2+"px";
     heart.style.top=rect.top+"px";
-    heart.style.setProperty("--x",(Math.random()*300-150)+"px");
-    heart.style.setProperty("--y",-(Math.random()*300+100)+"px");
+    heart.style.setProperty("--x",(Math.random()*250-125)+"px");
+    heart.style.setProperty("--y",-(Math.random()*400+200)+"px");
     document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),1800);
+    setTimeout(()=>heart.remove(),3200);
   }
 }
 
