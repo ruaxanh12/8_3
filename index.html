@@ -1,232 +1,6 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8/3 Cinematic Final 💙</title>
-
-<style>
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  background:linear-gradient(135deg,#fff7f9,#fdeef4);
-  overflow:hidden;
-  text-align:center;
-  color:#444;
-}
-
-/* Layout */
-.container{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  position:relative;
-  z-index:2;
-}
-
-.hidden{display:none;}
-
-button{
-  padding:12px 26px;
-  border:none;
-  border-radius:30px;
-  background:#ff7a9e;
-  color:white;
-  font-size:1rem;
-  cursor:pointer;
-  margin-top:20px;
-  box-shadow:0 6px 18px rgba(255,122,158,0.4);
-}
-
-/* Progress */
-.progress{
-  width:80%;
-  max-width:400px;
-  height:16px;
-  background:#ffd6df;
-  border-radius:10px;
-  margin-bottom:25px;
-  overflow:hidden;
-  position:relative;
-}
-
-.bar{
-  height:100%;
-  width:0%;
-  background:#ff7a9e;
-  transition:width 1s cubic-bezier(.22,1,.36,1);
-}
-
-.progress.shake{
-  animation:shake 0.6s ease;
-}
-
-@keyframes shake{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-3px)}
-  50%{transform:translateX(3px)}
-  75%{transform:translateX(-2px)}
-  100%{transform:translateX(0)}
-}
-
-/* Options */
-.option{
-  background:white;
-  padding:14px;
-  margin:10px 0;
-  border-radius:15px;
-  cursor:pointer;
-  width:270px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
-  transition:0.3s;
-}
-
-/* Hearts */
-.heart{
-  position:fixed;
-  pointer-events:none;
-  z-index:9999;
-  animation:fly 2.5s cubic-bezier(.22,1,.36,1) forwards;
-}
-
-@keyframes fly{
-  0%{
-    transform:translate(0,0) scale(1);
-    opacity:1;
-  }
-  100%{
-    transform:translate(var(--x), var(--y)) scale(0.4) rotate(720deg);
-    opacity:0;
-  }
-}
-
-/* Letter */
-.letter-scene{
-  position:fixed;
-  inset:0;
-  background:url('background.webp') center/cover no-repeat;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding-top:80px;
-  opacity:0;
-  transition:opacity 1.5s ease;
-}
-
-.letter-scene.active{ opacity:1; }
-
-.letter-overlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.4);
-}
-
-.letter{
-  max-width:560px;
-  background:#fffdf9;
-  padding:35px;
-  border-radius:20px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.2);
-  line-height:2;
-  font-size:18px;
-  font-family:Georgia, serif;
-  position:relative;
-  z-index:2;
-}
-
-.line{
-  opacity:0;
-  animation:fadeLine 2s forwards;
-}
-
-@keyframes fadeLine{
-  to{opacity:1;}
-}
-
-/* Ending image */
-.ending-screen{
-  position:fixed;
-  inset:0;
-  background:url('ending.jpg') center/cover no-repeat;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  opacity:0;
-  transition:opacity 2s ease;
-  z-index:10;
-}
-
-.ending-screen.active{
-  opacity:1;
-}
-
-.restart-btn{
-  margin-top:30px;
-  background:white;
-  color:#ff5c8a;
-}
-</style>
-</head>
-
-<body>
-
-<audio id="bgMusic" src="piano.m4a" loop></audio>
-
-<!-- Start -->
-<div class="container" id="start">
-  <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
-  <button onclick="showIntro()">Bắt đầu</button>
-</div>
-
-<!-- Intro -->
-<div class="container hidden" id="intro">
-  <h3>
-  Cùng nhau chơi 1 trò chơi nhỏ để nhận quà nha bé ơi,<br>
-  em phải trả lời đúng hết thì mới có quà nhen hehe 💙
-  </h3>
-  <button onclick="startGame()">Chơi luôn</button>
-</div>
-
-<!-- Game -->
-<div class="container hidden" id="game">
-  <div class="progress" id="progressContainer">
-    <div class="bar" id="progressBar"></div>
-  </div>
-  <h3 id="question"></h3>
-  <div id="options"></div>
-</div>
-
-<!-- Reward -->
-<div class="container hidden" id="rewardMessage">
-  <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
-  <button onclick="showLetter()">Nhận quà nhó</button>
-</div>
-
-<!-- Letter -->
-<div id="letter" class="hidden">
-  <div class="letter-scene" id="letterScene">
-    <div class="letter-overlay"></div>
-    <div class="letter">
-      <div class="line" style="animation-delay:0s">Em à,</div><br>
-      <div class="line" style="animation-delay:2s">Cảm ơn em vì đã yêu thương anh.</div><br>
-      <div class="line" style="animation-delay:4s">8/3 này tuy anh không ở cạnh em được,</div><br>
-      <div class="line" style="animation-delay:6s">nhưng em luôn là điều mà anh trân trọng nhất.</div><br>
-      <div class="line" style="animation-delay:8s">Chúc em có một ngày thật ấm áp và hạnh phúc.</div><br>
-      <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
-    </div>
-  </div>
-</div>
-
-<!-- Ending -->
-<div class="ending-screen" id="endingScreen">
-  <button class="restart-btn" onclick="location.reload()">Chơi lại</button>
-</div>
-
 <script>
+console.log("Script loaded");
+
 const questions=[
 {q:"Lần đầu tụi mình gặp nhau ở đâu?",a:["Hà Nội","Sài Gòn","Buôn Ma Thuột","Hông nhớ nữa"],correct:0},
 {q:"Ai chủ động nhắn tin trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
@@ -241,16 +15,22 @@ const questions=[
 let current=0;
 
 function showIntro(){
+  console.log("Intro clicked");
   document.getElementById("start").classList.add("hidden");
   document.getElementById("intro").classList.remove("hidden");
 }
 
 function startGame(){
+  console.log("Game started");
   document.getElementById("intro").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
+
   const bg=document.getElementById("bgMusic");
-  bg.volume=0.05;
-  bg.play();
+  if(bg){
+    bg.volume=0.05;
+    bg.play().catch(()=>{});
+  }
+
   showQuestion();
 }
 
@@ -259,6 +39,7 @@ function showQuestion(){
   document.getElementById("question").innerText=q.q;
   const optionsDiv=document.getElementById("options");
   optionsDiv.innerHTML="";
+
   q.a.forEach((option,index)=>{
     const btn=document.createElement("div");
     btn.className="option";
@@ -270,7 +51,6 @@ function showQuestion(){
 
 function checkAnswer(index,element){
   if(index===questions[current].correct){
-    launchHearts(element);
     fillProgress();
     current++;
     setTimeout(()=>{
@@ -280,7 +60,7 @@ function checkAnswer(index,element){
         document.getElementById("game").classList.add("hidden");
         document.getElementById("rewardMessage").classList.remove("hidden");
       }
-    },1200);
+    },800);
   }else{
     alert("Em nghĩ lại xem nào 💭");
   }
@@ -289,34 +69,6 @@ function checkAnswer(index,element){
 function fillProgress(){
   const percent=((current+1)/questions.length)*100;
   document.getElementById("progressBar").style.width=percent+"%";
-  const progress=document.getElementById("progressContainer");
-  progress.classList.add("shake");
-  setTimeout(()=>progress.classList.remove("shake"),600);
-}
-
-function launchHearts(element){
-  const rect=element.getBoundingClientRect();
-  const progress=document.getElementById("progressContainer").getBoundingClientRect();
-  const colors=["❤️","💗","💖","💘","💕","💓"];
-
-  for(let i=0;i<40;i++){
-    const heart=document.createElement("div");
-    heart.className="heart";
-    heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
-    heart.style.fontSize=(16+Math.random()*16)+"px";
-    heart.style.left=rect.left+rect.width/2+"px";
-    heart.style.top=rect.top+"px";
-
-    const spread=(Math.random()*200-100);
-    const x=progress.left+progress.width/2-rect.left+spread;
-    const y=progress.top-rect.top-100-(Math.random()*50);
-
-    heart.style.setProperty("--x",x+"px");
-    heart.style.setProperty("--y",y+"px");
-
-    document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),2500);
-  }
 }
 
 function showLetter(){
@@ -332,6 +84,3 @@ function showLetter(){
   },17000); 
 }
 </script>
-
-</body>
-</html>
