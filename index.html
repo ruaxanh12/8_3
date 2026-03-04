@@ -5,348 +5,533 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>8/3 Proposal Cinematic 💙</title>
 
+<link rel="preload" as="image" href="ending.jpg">
+
 <style>
+
 body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  background:linear-gradient(135deg,#ffe6ef,#ffd4e6);
-  overflow:hidden;
-  text-align:center;
-  color:#444;
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:linear-gradient(135deg,#ffe6ef,#ffd4e6);
+overflow:hidden;
+text-align:center;
+color:#444;
+}
+
+/* FLASH EFFECT */
+
+.flash{
+position:fixed;
+inset:0;
+background:white;
+opacity:0;
+pointer-events:none;
+z-index:999;
+transition:opacity 0.35s ease;
+}
+
+.flash.show{
+opacity:1;
+}
+
+/* PARTICLES */
+
+.particles{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:-1;
+}
+
+.particle{
+position:absolute;
+font-size:20px;
+opacity:0.6;
+animation:floatUp linear infinite;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(100vh) scale(0.8);opacity:0;}
+10%{opacity:0.7;}
+100%{transform:translateY(-10vh) scale(1.2);opacity:0;}
 }
 
 .container{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:20px;
 }
+
 .hidden{display:none;}
 
 button{
-  padding:12px 26px;
-  border:none;
-  border-radius:30px;
-  background:#ff5c8a;
-  color:white;
-  font-size:1rem;
-  cursor:pointer;
-  margin-top:20px;
-  box-shadow:0 6px 18px rgba(255,92,138,0.35);
-  transition:0.3s;
+padding:12px 28px;
+border:none;
+border-radius:30px;
+background:#ff5c8a;
+color:white;
+font-size:1rem;
+cursor:pointer;
+margin-top:20px;
+box-shadow:0 8px 20px rgba(255,92,138,0.35);
+transition:0.3s;
 }
-button:hover{ transform:translateY(-2px); }
 
-/* Progress */
+button:hover{
+transform:translateY(-3px);
+}
+
+/* HEART PROGRESS */
+
 .progress{
-  width:80%;
-  max-width:420px;
-  height:16px;
-  background:#ffdbe9;
-  border-radius:30px;
-  margin-bottom:25px;
-  overflow:hidden;
-}
-.bar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#ff9fbd,#ff6f9c);
-  transition:width 0.8s cubic-bezier(.22,1,.36,1);
+display:flex;
+gap:8px;
+margin-bottom:25px;
 }
 
-/* Options */
+.heartStep{
+font-size:24px;
+opacity:0.3;
+transition:0.5s;
+}
+
+.heartStep.active{
+opacity:1;
+transform:scale(1.3);
+}
+
+/* OPTIONS */
+
 .option{
-  background:white;
-  padding:12px;
-  margin:8px 0;
-  border-radius:15px;
-  cursor:pointer;
-  width:260px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
-  transition:all 0.25s ease;
+background:white;
+padding:12px;
+margin:8px 0;
+border-radius:16px;
+cursor:pointer;
+width:260px;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
+transition:all 0.25s ease;
 }
+
+.option:hover{
+transform:scale(1.03);
+}
+
 .option.selected{
-  background:#ffd6e6;
-  transform:scale(1.05);
+background:#ffd6e6;
+transform:scale(1.08);
 }
+
 .option.wrong{
-  background:#ffd0d0;
-  transform:scale(1.05);
+background:#ffd0d0;
 }
 
-/* Hearts */
+/* HEART ANIMATION */
+
 .heart{
-  position:fixed;
-  font-size:26px;
-  pointer-events:none;
-  z-index:9999;
-  animation:fly 3.5s cubic-bezier(.22,1,.36,1) forwards;
+position:fixed;
+pointer-events:none;
+z-index:9999;
+animation:fly 3.5s cubic-bezier(.22,1,.36,1) forwards;
+text-shadow:0 0 10px rgba(255,100,150,0.8);
+filter: drop-shadow(0 0 8px rgba(255,120,170,0.8));
 }
+
 @keyframes fly{
-  0%{transform:translate(0,0) scale(1);opacity:1;}
-  100%{
-    transform:translate(var(--x), var(--y)) scale(0.4) rotate(540deg);
-    opacity:0;
-  }
+0%{transform:translate(0,0) scale(1);opacity:1;}
+100%{
+transform:translate(var(--x),var(--y)) scale(0.4) rotate(540deg);
+opacity:0;
+}
 }
 
-/* Letter */
+/* LETTER */
+
 .letter-scene{
-  position:fixed;
-  inset:0;
-  background:url('background.webp') center/cover no-repeat;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding-top:90px;
-  opacity:0;
-  transition:opacity 1.5s ease;
-  z-index:50;
-}
-.letter-scene.active{opacity:1;}
-.letter-scene.fade-out{
-  opacity:0;
-  transition:opacity 2.5s ease;
-}
-.letter-overlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.4);
-}
-.letter{
-  max-width:520px;
-  background:#fffdf9;
-  padding:40px 32px;
-  border-radius:18px;
-  line-height:1.7;
-  font-family:"Georgia","Times New Roman",serif;
-  font-size:1.5rem;
-  color:#333;
-  position:relative;
-  z-index:2;
-}
-.line{
-  opacity:0;
-  transform:translateY(10px);
-  animation:fadeUp 1.5s forwards;
-}
-@keyframes fadeUp{
-  to{opacity:1; transform:translateY(0);}
+position:fixed;
+inset:0;
+background:url('background.webp') center/cover no-repeat;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+padding-top:90px;
+opacity:0;
+transition:opacity 1.5s ease;
+z-index:50;
 }
 
-/* Ending */
+.letter-scene.active{opacity:1;}
+
+.letter-scene.fade-out{
+opacity:0;
+transition:opacity 2.5s ease;
+}
+
+.letter-overlay{
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.45);
+}
+
+.letter{
+max-width:520px;
+background:#fffdf9;
+padding:40px 32px;
+border-radius:18px;
+line-height:1.7;
+font-family:"Georgia","Times New Roman",serif;
+font-size:1.5rem;
+color:#333;
+position:relative;
+z-index:2;
+}
+
+.line{
+opacity:0;
+transform:translateY(10px);
+animation:fadeUp 1.6s forwards;
+}
+
+@keyframes fadeUp{
+to{opacity:1; transform:translateY(0);}
+}
+
+/* ENDING */
+
 .ending{
-  position:fixed;
-  inset:0;
-  background:black;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  opacity:0;
-  visibility:hidden;
-  transition:opacity 2.5s ease;
-  z-index:200;
+position:fixed;
+inset:0;
+background:black;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+opacity:0;
+visibility:hidden;
+transition:opacity 2.5s ease;
+z-index:200;
 }
+
 .ending.show{
-  opacity:1;
-  visibility:visible;
+opacity:1;
+visibility:visible;
 }
+
 .ending img{
-  max-width:85%;
-  border-radius:20px;
-  filter:blur(20px);
-  opacity:0;
-  transition:filter 3s ease, opacity 2s ease;
+max-width:85%;
+border-radius:20px;
+filter:blur(20px);
+opacity:0;
+transform:scale(1.1);
+transition:filter 3s ease, opacity 2s ease, transform 4s ease;
 }
+
 .ending img.focus{
-  filter:blur(0);
-  opacity:1;
+filter:blur(0);
+opacity:1;
+transform:scale(1);
 }
+
 </style>
 </head>
 
 <body>
 
+<div class="flash" id="flash"></div>
+<div class="particles" id="particles"></div>
+
 <audio id="bgMusic" src="piano.m4a" loop></audio>
-<audio id="tingSound">
-<source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
-</audio>
 
 <div class="container" id="start">
-  <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
-  <button onclick="showIntro()">Bắt đầu</button>
+<h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
+<button onclick="showIntro()">Bắt đầu</button>
 </div>
 
 <div class="container hidden" id="intro">
-  <h3>Cùng anh chơi 1 trò này nha, em phải trả lời đúng hết thì mới có quà đó hehe 💙</h3>
-  <button onclick="startGame()">Chơi luôn</button>
+<h3>Cùng anh chơi 1 trò này nha, em phải trả lời đúng hết thì mới có quà đó hehe 💙</h3>
+<button onclick="startGame()">Chơi luôn</button>
 </div>
 
 <div class="container hidden" id="game">
-  <div class="progress">
-    <div class="bar" id="progressBar"></div>
-  </div>
-  <h3 id="question"></h3>
-  <div id="options"></div>
+<div class="progress" id="progress"></div>
+<h3 id="question"></h3>
+<div id="options"></div>
 </div>
 
-<div class="container hidden" id="rewardMessage">
-  <h3>Đúng rồi nè, eny of anh giỏi quá ❤️</h3>
-  <button onclick="showLetter()">Nhận quà nhó</button>
+<div class="container hidden" id="reward">
+<h3>Đúng hết rồi nè, eny of anh giỏi quá 💗</h3>
+<button onclick="showLetter()">Nhận quà nhó</button>
 </div>
 
 <div id="letter" class="hidden">
-  <div class="letter-scene" id="letterScene">
-    <div class="letter-overlay"></div>
-    <div class="letter">
-      <div class="line" style="animation-delay:0s">Em à,</div>
-      <div class="line" style="animation-delay:2s">Cảm ơn em vì đã yêu thương anh.</div>
-      <div class="line" style="animation-delay:4s">8/3 này tuy anh không ở cạnh em được,</div>
-      <div class="line" style="animation-delay:6s">nhưng em luôn là điều mà anh trân trọng nhất.</div>
-      <div class="line" style="animation-delay:8s">Chúc em có một ngày thật ấm áp và hạnh phúc.</div>
-      <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
-    </div>
-  </div>
+<div class="letter-scene" id="letterScene">
+<div class="letter-overlay"></div>
+
+<div class="letter">
+
+<div class="line" style="animation-delay:0s">Em à,</div>
+<div class="line" style="animation-delay:2s">Cảm ơn em vì đã yêu thương anh.</div>
+<div class="line" style="animation-delay:4s">8/3 này tuy anh không ở cạnh em được,</div>
+<div class="line" style="animation-delay:6s">nhưng em luôn là điều mà anh trân trọng nhất.</div>
+<div class="line" style="animation-delay:8s">Chúc em có một ngày thật ấm áp và hạnh phúc.</div>
+<div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
+
+</div>
+</div>
 </div>
 
 <div class="ending" id="ending">
-  <img src="ending.jpg" id="endingImg">
-  <button onclick="location.reload()">Chơi lại</button>
+<img src="ending.jpg" id="endingImg">
+<button onclick="location.reload()">Chơi lại</button>
 </div>
 
 <script>
-const bgMusic=document.getElementById("bgMusic");
-const ting=document.getElementById("tingSound");
-const progressBar=document.getElementById("progressBar");
+
+const start=document.getElementById("start");
+const intro=document.getElementById("intro");
+const game=document.getElementById("game");
+const reward=document.getElementById("reward");
+const letter=document.getElementById("letter");
+const question=document.getElementById("question");
+const options=document.getElementById("options");
+const letterScene=document.getElementById("letterScene");
+const ending=document.getElementById("ending");
+const endingImg=document.getElementById("endingImg");
+const flash=document.getElementById("flash");
 
 const questions=[
-{q:"First date của mình khi nào nè?",a:["17/7/2025","18/7/2025","19/7/2025","Hông nhớ nữa"],correct:1},
-{q:"Ai chủ động hẹn gặp trước?",a:["Anh","Em","Cả hai","Không nhớ"],correct:1},
+
+{q:"First date của mình khi nào nè?",a:["17/7/2025","18/7/2025","19/7/2025","Hông nhớ"],correct:1},
+{q:"Ai chủ động hẹn gặp trước?",a:["Anh","Em","Ai biết","Không nhớ"],correct:1},
 {q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
 {q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Chúng tôi chung tình cơ mà"],correct:1},
-{q:"Anh thích ăn gì nhất?",a:["Steak cháy cạnh","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
-{q:"Màu anh thích em mặc nhất?",a:["Trắng","Màu nho","Hồng","Xanh"],correct:2},
-{q:"Điều mà anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
-{q:"Anh muốn đi cùng em bao lâu?",a:["Một thời gian","Vài năm","Trăm năm","Mãi mãi"],correct:3}
+{q:"Anh thích ăn gì nhất?",a:["Steak","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
+{q:"Màu anh thích em mặc?",a:["Trắng","Nho","Hồng","Xanh"],correct:2},
+{q:"Điều anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
+{q:"Anh muốn đi cùng em bao lâu?",a:["Một tẹo","Vài năm","Trăm năm","Mãi mãi"],correct:3}
+
 ];
 
 let current=0;
 let locked=false;
+let wrongCount=0;
+
+/* PARTICLES */
+
+const particles=document.getElementById("particles");
+
+for(let i=0;i<25;i++){
+const p=document.createElement("div");
+p.className="particle";
+p.innerHTML=["💗","💖","💕","💘"][Math.floor(Math.random()*4)];
+p.style.left=Math.random()*100+"%";
+p.style.animationDuration=(10+Math.random()*10)+"s";
+p.style.fontSize=(16+Math.random()*20)+"px";
+particles.appendChild(p);
+}
+
+/* GAME */
 
 function showIntro(){
-  document.getElementById("start").classList.add("hidden");
-  document.getElementById("intro").classList.remove("hidden");
+start.classList.add("hidden");
+intro.classList.remove("hidden");
 }
 
 function startGame(){
-  current=0;
-  locked=false;
-  progressBar.style.width="0%";
+intro.classList.add("hidden");
+game.classList.remove("hidden");
+createProgress();
+document.getElementById("bgMusic").volume=0.05;
+document.getElementById("bgMusic").play().catch(()=>{});
+showQuestion();
+}
 
-  document.getElementById("intro").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
+function createProgress(){
+const progress=document.getElementById("progress");
+progress.innerHTML="";
+for(let i=0;i<questions.length;i++){
+const h=document.createElement("div");
+h.className="heartStep";
+h.innerHTML="💗";
+progress.appendChild(h);
+}
+}
 
-  bgMusic.volume=0.03;
-  bgMusic.play().catch(()=>{});
-  showQuestion();
+function updateProgress(){
+document.querySelectorAll(".heartStep")[current-1].classList.add("active");
 }
 
 function showQuestion(){
-  const q=questions[current];
-  document.getElementById("question").innerText=q.q;
-  const optionsDiv=document.getElementById("options");
-  optionsDiv.innerHTML="";
-  q.a.forEach((option,index)=>{
-    const btn=document.createElement("div");
-    btn.className="option";
-    btn.innerText=option;
-    btn.onclick=()=>checkAnswer(index,btn);
-    optionsDiv.appendChild(btn);
-  });
+wrongCount=0;
+const q=questions[current];
+question.innerText=q.q;
+options.innerHTML="";
+q.a.forEach((opt,i)=>{
+const div=document.createElement("div");
+div.className="option";
+div.innerText=opt;
+div.onclick=()=>checkAnswer(i,div);
+options.appendChild(div);
+});
 }
 
-function checkAnswer(index,element){
-  if(locked) return;
-  locked=true;
+function checkAnswer(index,el){
 
-  document.querySelectorAll(".option")
-    .forEach(opt=>opt.classList.remove("selected","wrong"));
+if(locked)return;
+locked=true;
 
-  if(index===questions[current].correct){
+if(index===questions[current].correct){
 
-    element.classList.add("selected");
-    ting.currentTime=0;
-    ting.play().catch(()=>{});
-    launchHearts(element);
+el.classList.add("selected");
+launchHearts(el);
 
-    current++;
-    progressBar.style.width=(current/questions.length*100)+"%";
+current++;
+updateProgress();
 
-    if(current===questions.length){
-      setTimeout(()=>{
-        document.getElementById("game").classList.add("hidden");
-        document.getElementById("rewardMessage").classList.remove("hidden");
-      },1200);
-    }else{
-      setTimeout(()=>{
-        locked=false;
-        showQuestion();
-      },1000);
-    }
+if(current===questions.length){
 
-  }else{
-    element.classList.add("wrong");
-    setTimeout(()=>{
-      element.classList.remove("wrong");
-      locked=false;
-    },600);
-  }
+setTimeout(()=>{
+game.classList.add("hidden");
+reward.classList.remove("hidden");
+},1000);
+
+}else{
+
+setTimeout(()=>{
+locked=false;
+showQuestion();
+},800);
+
 }
+
+}else{
+
+wrongCount++;
+el.classList.add("wrong");
+
+let msg="";
+
+if(wrongCount===1){
+msg="Cho bé chọn lại đó 🥺";
+}
+else if(wrongCount===2){
+msg="Ơ, lại sai á, cho em thêm cơ hội nữa 😆";
+}
+else{
+msg="Chọn sai nữa là chia tay nha 😤";
+}
+
+setTimeout(()=>{alert(msg);},200);
+
+setTimeout(()=>{
+el.classList.remove("wrong");
+locked=false;
+},600);
+
+}
+
+}
+
+/* HEART BURST */
 
 function launchHearts(element){
-  const rect=element.getBoundingClientRect();
-  const colors=["❤️","💗","💖","💘","💕","💓"];
-  for(let i=0;i<20;i++){
-    const heart=document.createElement("div");
-    heart.className="heart";
-    heart.innerHTML=colors[Math.floor(Math.random()*colors.length)];
-    heart.style.left=rect.left+rect.width/2+"px";
-    heart.style.top=rect.top+"px";
-    heart.style.setProperty("--x",(Math.random()*300-150)+"px");
-    heart.style.setProperty("--y",-(Math.random()*500+200)+"px");
-    document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),3500);
-  }
+
+const rect=element.getBoundingClientRect();
+
+for(let i=0;i<20;i++){
+
+const heart=document.createElement("div");
+
+heart.className="heart";
+heart.innerHTML="💗";
+
+heart.style.left=rect.left+rect.width/2+"px";
+heart.style.top=rect.top+"px";
+
+heart.style.setProperty("--x",(Math.random()*300-150)+"px");
+heart.style.setProperty("--y",-(Math.random()*400+200)+"px");
+
+document.body.appendChild(heart);
+
+setTimeout(()=>heart.remove(),3500);
+
 }
+
+}
+
+/* HEART RAIN FULL SCREEN */
+
+function heartRain(){
+
+for(let i=0;i<140;i++){
+
+setTimeout(()=>{
+
+const heart=document.createElement("div");
+
+heart.className="heart";
+heart.innerHTML=["💗","💖","💕","💘","💓"][Math.floor(Math.random()*5)];
+
+heart.style.left=Math.random()*window.innerWidth+"px";
+heart.style.top=Math.random()*window.innerHeight+"px";
+
+heart.style.fontSize=(18+Math.random()*22)+"px";
+
+heart.style.setProperty("--x",(Math.random()*300-150)+"px");
+heart.style.setProperty("--y",-(Math.random()*600+200)+"px");
+
+heart.style.animationDuration=(2+Math.random()*2)+"s";
+
+document.body.appendChild(heart);
+
+setTimeout(()=>heart.remove(),4000);
+
+},i*25);
+
+}
+
+}
+
+/* LETTER */
 
 function showLetter(){
-  document.getElementById("rewardMessage").classList.add("hidden");
-  document.getElementById("letter").classList.remove("hidden");
 
-  setTimeout(()=>{
-    document.getElementById("letterScene").classList.add("active");
-  },100);
+reward.classList.add("hidden");
+letter.classList.remove("hidden");
 
-  setTimeout(startEndingTransition,15000);
+setTimeout(()=>{
+letterScene.classList.add("active");
+},200);
+
+setTimeout(heartRain,11000);
+setTimeout(startEnding,15000);
+
 }
 
-function startEndingTransition(){
-  const letterScene=document.getElementById("letterScene");
-  const ending=document.getElementById("ending");
+/* ENDING */
 
-  letterScene.classList.add("fade-out");
-  ending.classList.add("show");
+function startEnding(){
 
-  setTimeout(()=>{
-    document.getElementById("endingImg").classList.add("focus");
-  },800);
+flash.classList.add("show");
+
+setTimeout(()=>{
+flash.classList.remove("show");
+},300);
+
+letterScene.classList.add("fade-out");
+
+ending.classList.add("show");
+
+setTimeout(()=>{
+endingImg.classList.add("focus");
+},600);
+
 }
+
 </script>
 
 </body>
 </html>
-
-
