@@ -27,10 +27,10 @@ background:white;
 opacity:0;
 pointer-events:none;
 z-index:999;
-transition:opacity 0.35s ease;
+transition:opacity .3s;
 }
 
-.flash.show{opacity:1;}
+.flash.show{opacity:1}
 
 /* PARTICLES */
 
@@ -44,14 +44,14 @@ z-index:-1;
 .particle{
 position:absolute;
 font-size:20px;
-opacity:0.6;
+opacity:.6;
 animation:floatUp linear infinite;
 }
 
 @keyframes floatUp{
-0%{transform:translateY(100vh) scale(0.8);opacity:0;}
-10%{opacity:0.7;}
-100%{transform:translateY(-10vh) scale(1.2);opacity:0;}
+0%{transform:translateY(100vh);opacity:0}
+10%{opacity:.7}
+100%{transform:translateY(-10vh);opacity:0}
 }
 
 /* LAYOUT */
@@ -65,7 +65,7 @@ align-items:center;
 padding:20px;
 }
 
-.hidden{display:none;}
+.hidden{display:none}
 
 button{
 padding:12px 28px;
@@ -76,13 +76,10 @@ color:white;
 font-size:1rem;
 cursor:pointer;
 margin-top:20px;
-box-shadow:0 8px 20px rgba(255,92,138,0.35);
-transition:0.3s;
+box-shadow:0 8px 20px rgba(255,92,138,.35);
 }
 
-button:hover{transform:translateY(-3px);}
-
-/* PROGRESS */
+/* HEART PROGRESS */
 
 .progress{
 display:flex;
@@ -92,8 +89,8 @@ margin-bottom:25px;
 
 .heartStep{
 font-size:24px;
-opacity:0.3;
-transition:0.5s;
+opacity:.3;
+transition:.5s;
 }
 
 .heartStep.active{
@@ -110,11 +107,8 @@ margin:8px 0;
 border-radius:16px;
 cursor:pointer;
 width:260px;
-box-shadow:0 4px 12px rgba(0,0,0,0.05);
-transition:all 0.25s ease;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
 }
-
-.option:hover{transform:scale(1.03);}
 
 .option.selected{
 background:#ffd6e6;
@@ -131,15 +125,14 @@ background:#ffd0d0;
 position:fixed;
 pointer-events:none;
 z-index:9999;
-animation:fly 3.5s cubic-bezier(.22,1,.36,1) forwards;
-text-shadow:0 0 10px rgba(255,100,150,0.8);
+animation:fly 3s forwards;
 }
 
 @keyframes fly{
-0%{transform:translate(0,0) scale(1);opacity:1;}
+0%{transform:translate(0,0);opacity:1}
 100%{
-transform:translate(var(--x),var(--y)) scale(0.4) rotate(540deg);
-opacity:0;
+transform:translate(var(--x),var(--y)) scale(.4) rotate(540deg);
+opacity:0
 }
 }
 
@@ -154,34 +147,20 @@ justify-content:center;
 align-items:flex-start;
 padding-top:90px;
 opacity:0;
-transition:opacity 1.5s ease;
+transition:opacity 1.5s;
 z-index:50;
 }
 
-.letter-scene.active{opacity:1;}
-
-.letter-scene.fade-out{
-opacity:0;
-transition:opacity 2.5s ease;
-}
-
-.letter-overlay{
-position:absolute;
-inset:0;
-background:rgba(0,0,0,0.45);
-}
+.letter-scene.active{opacity:1}
 
 .letter{
 max-width:520px;
 background:#fffdf9;
-padding:40px 32px;
+padding:40px;
 border-radius:18px;
 line-height:1.7;
-font-family:"Georgia","Times New Roman",serif;
+font-family:"Georgia";
 font-size:1.5rem;
-color:#333;
-position:relative;
-z-index:2;
 }
 
 /* TYPEWRITER */
@@ -191,7 +170,7 @@ opacity:0;
 min-height:1.6em;
 }
 
-.line.show{opacity:1;}
+.line.show{opacity:1}
 
 .cursor{
 display:inline-block;
@@ -202,8 +181,8 @@ animation:blink 1s infinite;
 }
 
 @keyframes blink{
-0%,50%,100%{opacity:1;}
-25%,75%{opacity:0;}
+0%,50%,100%{opacity:1}
+25%,75%{opacity:0}
 }
 
 /* ENDING */
@@ -218,7 +197,7 @@ justify-content:center;
 align-items:center;
 opacity:0;
 visibility:hidden;
-transition:opacity 2.5s ease;
+transition:opacity 2s;
 z-index:200;
 }
 
@@ -232,14 +211,12 @@ max-width:85%;
 border-radius:20px;
 filter:blur(20px);
 opacity:0;
-transform:scale(1.1);
-transition:filter 3s ease, opacity 2s ease, transform 4s ease;
+transition:filter 3s,opacity 2s;
 }
 
 .ending img.focus{
 filter:blur(0);
 opacity:1;
-transform:scale(1);
 }
 
 </style>
@@ -252,30 +229,34 @@ transform:scale(1);
 
 <audio id="bgMusic" src="piano.m4a" loop></audio>
 
+<!-- START -->
 <div class="container" id="start">
 <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
 <button onclick="showIntro()">Bắt đầu</button>
 </div>
 
+<!-- INTRO -->
 <div class="container hidden" id="intro">
 <h3>Cùng anh chơi 1 trò này nha, em phải trả lời đúng hết thì mới có quà đó hehe 💙</h3>
 <button onclick="startGame()">Chơi luôn</button>
 </div>
 
+<!-- GAME -->
 <div class="container hidden" id="game">
 <div class="progress" id="progress"></div>
 <h3 id="question"></h3>
 <div id="options"></div>
 </div>
 
+<!-- REWARD -->
 <div class="container hidden" id="reward">
 <h3>Đúng hết rồi nè, eny of anh giỏi quá 💗</h3>
 <button onclick="showLetter()">Nhận quà nhó</button>
 </div>
 
+<!-- LETTER -->
 <div id="letter" class="hidden">
 <div class="letter-scene" id="letterScene">
-<div class="letter-overlay"></div>
 
 <div class="letter">
 <div class="line">Em à,</div>
@@ -289,6 +270,7 @@ transform:scale(1);
 </div>
 </div>
 
+<!-- ENDING -->
 <div class="ending" id="ending">
 <img src="ending.jpg" id="endingImg">
 <button onclick="location.reload()">Chơi lại</button>
@@ -296,17 +278,7 @@ transform:scale(1);
 
 <script>
 
-const start=document.getElementById("start");
-const intro=document.getElementById("intro");
-const game=document.getElementById("game");
-const reward=document.getElementById("reward");
-const letter=document.getElementById("letter");
-const question=document.getElementById("question");
-const options=document.getElementById("options");
-const letterScene=document.getElementById("letterScene");
-const ending=document.getElementById("ending");
-const endingImg=document.getElementById("endingImg");
-const flash=document.getElementById("flash");
+/* QUESTIONS */
 
 const questions=[
 {q:"First date của mình khi nào nè?",a:["17/7/2025","18/7/2025","19/7/2025","Hông nhớ"],correct:1},
@@ -323,20 +295,6 @@ let current=0;
 let locked=false;
 let wrongCount=0;
 
-/* PARTICLES */
-
-const particles=document.getElementById("particles");
-
-for(let i=0;i<25;i++){
-const p=document.createElement("div");
-p.className="particle";
-p.innerHTML=["💗","💖","💕","💘"][Math.floor(Math.random()*4)];
-p.style.left=Math.random()*100+"%";
-p.style.animationDuration=(10+Math.random()*10)+"s";
-p.style.fontSize=(16+Math.random()*20)+"px";
-particles.appendChild(p);
-}
-
 /* GAME */
 
 function showIntro(){
@@ -348,13 +306,10 @@ function startGame(){
 intro.classList.add("hidden");
 game.classList.remove("hidden");
 createProgress();
-document.getElementById("bgMusic").volume=0.05;
-document.getElementById("bgMusic").play().catch(()=>{});
 showQuestion();
 }
 
 function createProgress(){
-const progress=document.getElementById("progress");
 progress.innerHTML="";
 for(let i=0;i<questions.length;i++){
 const h=document.createElement("div");
@@ -369,17 +324,25 @@ document.querySelectorAll(".heartStep")[current-1].classList.add("active");
 }
 
 function showQuestion(){
+
 wrongCount=0;
+
 const q=questions[current];
 question.innerText=q.q;
 options.innerHTML="";
+
 q.a.forEach((opt,i)=>{
+
 const div=document.createElement("div");
 div.className="option";
 div.innerText=opt;
+
 div.onclick=()=>checkAnswer(i,div);
+
 options.appendChild(div);
+
 });
+
 }
 
 function checkAnswer(index,el){
@@ -418,11 +381,11 @@ el.classList.add("wrong");
 
 let msg="";
 
-if(wrongCount===1){msg="Cho bé chọn lại đó 🥺";}
-else if(wrongCount===2){msg="Ơ, lại sai á, cho em thêm cơ hội nữa 😆";}
-else{msg="Chọn sai nữa là chia tay nha 😤";}
+if(wrongCount===1) msg="Cho bé chọn lại đó 🥺";
+else if(wrongCount===2) msg="Ơ, lại sai á, cho em thêm cơ hội nữa 😆";
+else msg="Chọn sai nữa là chia tay nha 😤";
 
-setTimeout(()=>{alert(msg);},200);
+setTimeout(()=>alert(msg),200);
 
 setTimeout(()=>{
 el.classList.remove("wrong");
@@ -453,9 +416,109 @@ heart.style.setProperty("--y",-(Math.random()*400+200)+"px");
 
 document.body.appendChild(heart);
 
-setTimeout(()=>heart.remove(),3500);
+setTimeout(()=>heart.remove(),3000);
 
 }
+
+}
+
+/* TYPEWRITER */
+
+function typeLine(el,text,speed,next){
+
+let i=0;
+el.innerHTML="";
+el.classList.add("show");
+
+const cursor=document.createElement("span");
+cursor.className="cursor";
+el.appendChild(cursor);
+
+const typing=setInterval(()=>{
+
+if(i<text.length){
+cursor.insertAdjacentText("beforebegin",text[i]);
+i++;
+}else{
+clearInterval(typing);
+cursor.remove();
+if(next)setTimeout(next,500);
+}
+
+},speed);
+
+}
+
+/* LETTER */
+
+function showLetter(){
+
+reward.classList.add("hidden");
+letter.classList.remove("hidden");
+
+letterScene.classList.add("active");
+
+const lines=document.querySelectorAll(".line");
+const texts=[...lines].map(l=>l.textContent);
+
+lines.forEach(l=>l.textContent="");
+
+typeLine(lines[0],texts[0],60,()=>{
+typeLine(lines[1],texts[1],60,()=>{
+typeLine(lines[2],texts[2],60,()=>{
+typeLine(lines[3],texts[3],60,()=>{
+typeLine(lines[4],texts[4],60,()=>{
+typeLine(lines[5],texts[5],90);
+});
+});
+});
+});
+});
+
+setTimeout(heartRain,11000);
+setTimeout(startEnding,15000);
+
+}
+
+/* HEART RAIN */
+
+function heartRain(){
+
+for(let i=0;i<120;i++){
+
+setTimeout(()=>{
+
+const heart=document.createElement("div");
+heart.className="heart";
+heart.innerHTML="💗";
+
+heart.style.left=Math.random()*window.innerWidth+"px";
+heart.style.top=Math.random()*window.innerHeight+"px";
+
+heart.style.setProperty("--x",(Math.random()*200-100)+"px");
+heart.style.setProperty("--y",-(Math.random()*500+200)+"px");
+
+document.body.appendChild(heart);
+
+setTimeout(()=>heart.remove(),3000);
+
+},i*30);
+
+}
+
+}
+
+/* ENDING */
+
+function startEnding(){
+
+flash.classList.add("show");
+
+setTimeout(()=>flash.classList.remove("show"),200);
+
+ending.classList.add("show");
+
+setTimeout(()=>endingImg.classList.add("focus"),500);
 
 }
 
