@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8/3 Proposal Cinematic 💙</title>
-
-<link rel="preload" as="image" href="ending.jpg">
+<title>8/3 Proposal 💙</title>
 
 <style>
 
@@ -16,22 +14,6 @@ background:linear-gradient(135deg,#ffe6ef,#ffd4e6);
 overflow:hidden;
 text-align:center;
 color:#444;
-}
-
-/* FLASH */
-
-.flash{
-position:fixed;
-inset:0;
-background:white;
-opacity:0;
-pointer-events:none;
-z-index:999;
-transition:opacity 0.35s ease;
-}
-
-.flash.show{
-opacity:1;
 }
 
 /* PARTICLES */
@@ -51,10 +33,12 @@ animation:floatUp linear infinite;
 }
 
 @keyframes floatUp{
-0%{transform:translateY(100vh) scale(0.8);opacity:0;}
+0%{transform:translateY(100vh);opacity:0;}
 10%{opacity:0.7;}
-100%{transform:translateY(-10vh) scale(1.2);opacity:0;}
+100%{transform:translateY(-10vh);opacity:0;}
 }
+
+/* CONTAINER */
 
 .container{
 min-height:100vh;
@@ -76,15 +60,9 @@ color:white;
 font-size:1rem;
 cursor:pointer;
 margin-top:20px;
-box-shadow:0 8px 20px rgba(255,92,138,0.35);
-transition:0.3s;
 }
 
-button:hover{
-transform:translateY(-3px);
-}
-
-/* HEART PROGRESS */
+/* PROGRESS */
 
 .progress{
 display:flex;
@@ -95,7 +73,6 @@ margin-bottom:25px;
 .heartStep{
 font-size:24px;
 opacity:0.3;
-transition:0.5s;
 }
 
 .heartStep.active{
@@ -112,8 +89,6 @@ margin:8px 0;
 border-radius:16px;
 cursor:pointer;
 width:260px;
-box-shadow:0 4px 12px rgba(0,0,0,0.05);
-transition:all 0.25s ease;
 }
 
 .option:hover{
@@ -122,7 +97,6 @@ transform:scale(1.03);
 
 .option.selected{
 background:#ffd6e6;
-transform:scale(1.08);
 }
 
 .option.wrong{
@@ -134,16 +108,12 @@ background:#ffd0d0;
 .heart{
 position:fixed;
 pointer-events:none;
-z-index:9999;
-animation:fly 3.5s cubic-bezier(.22,1,.36,1) forwards;
+animation:fly 3s forwards;
 }
 
 @keyframes fly{
-0%{transform:translate(0,0) scale(1);opacity:1;}
-100%{
-transform:translate(var(--x),var(--y)) scale(0.4) rotate(540deg);
-opacity:0;
-}
+0%{transform:translate(0,0);opacity:1;}
+100%{transform:translate(var(--x),var(--y));opacity:0;}
 }
 
 /* LETTER SCENE */
@@ -151,50 +121,66 @@ opacity:0;
 .letter-scene{
 position:fixed;
 inset:0;
-background:url('background.webp') center/cover no-repeat;
+background:url("background.webp") center/cover no-repeat;
 display:flex;
 justify-content:center;
 align-items:flex-start;
 padding-top:20px;
-opacity:0;
-transition:opacity 1.5s ease;
 z-index:50;
 }
 
-.letter-scene.active{
-opacity:1;
+/* ENVELOPE */
+
+.envelope-wrapper{
+display:flex;
+flex-direction:column;
+align-items:center;
+cursor:pointer;
 }
 
-.letter-overlay{
-position:absolute;
-inset:0;
-background:rgba(0,0,0,0.45);
-}
-
-.letter{
-
-max-width:520px;
-background:#fffdf9;
-padding:40px 32px;
-border-radius:18px;
-line-height:1.7;
-font-family:"Georgia","Times New Roman",serif;
-font-size:1.5rem;
-color:#333;
+.envelope{
+width:280px;
+height:180px;
+background:#f8c8dc;
+border-radius:8px;
 position:relative;
-z-index:2;
-
-box-shadow:0 20px 50px rgba(0,0,0,0.25);
-
-/* hiệu ứng thiệp nổi */
-animation:floatLetter 6s ease-in-out infinite;
-
+overflow:hidden;
 }
 
-@keyframes floatLetter{
-0%{transform:translateY(0px);}
-50%{transform:translateY(-16px);}
-100%{transform:translateY(0px);}
+.flap{
+position:absolute;
+width:100%;
+height:100%;
+background:#f3a8c4;
+clip-path:polygon(0 0,100% 0,50% 60%);
+transform-origin:top;
+transition:transform 0.8s;
+z-index:5;
+}
+
+.paper{
+position:absolute;
+bottom:0;
+left:10%;
+width:80%;
+height:140px;
+background:white;
+border-radius:10px;
+padding:15px;
+font-family:Georgia;
+line-height:1.6;
+font-size:1rem;
+
+transform:translateY(70px);
+transition:transform 1s;
+}
+
+.envelope.open .flap{
+transform:rotateX(180deg);
+}
+
+.envelope.open .paper{
+transform:translateY(-60px);
 }
 
 .line{
@@ -204,7 +190,21 @@ animation:fadeUp 1.6s forwards;
 }
 
 @keyframes fadeUp{
-to{opacity:1; transform:translateY(0);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* TAP TEXT */
+
+.tap-text{
+margin-top:18px;
+font-size:14px;
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{opacity:0.4}
+50%{opacity:1}
+100%{opacity:0.4}
 }
 
 /* ENDING */
@@ -219,8 +219,7 @@ justify-content:center;
 align-items:center;
 opacity:0;
 visibility:hidden;
-transition:opacity 2.5s ease;
-z-index:200;
+transition:opacity 2s;
 }
 
 .ending.show{
@@ -231,16 +230,6 @@ visibility:visible;
 .ending img{
 max-width:85%;
 border-radius:20px;
-filter:blur(20px);
-opacity:0;
-transform:scale(1.1);
-transition:filter 3s ease, opacity 2s ease, transform 4s ease;
-}
-
-.ending img.focus{
-filter:blur(0);
-opacity:1;
-transform:scale(1);
 }
 
 </style>
@@ -248,10 +237,7 @@ transform:scale(1);
 
 <body>
 
-<div class="flash" id="flash"></div>
 <div class="particles" id="particles"></div>
-
-<audio id="bgMusic" src="piano.m4a" loop></audio>
 
 <div class="container" id="start">
 <h2>8/3 này, anh có một điều đặc biệt dành cho em 💙</h2>
@@ -270,15 +256,23 @@ transform:scale(1);
 </div>
 
 <div class="container hidden" id="reward">
-<h3>Đúng hết rồi nè, eny of anh giỏi quá 💗</h3>
+<h3>Đúng hết rồi nè 💗</h3>
 <button onclick="showLetter()">Nhận quà nhó</button>
 </div>
 
-<div id="letter" class="hidden">
-<div class="letter-scene" id="letterScene">
-<div class="letter-overlay"></div>
+<!-- LETTER -->
 
-<div class="letter">
+<div id="letter" class="hidden">
+
+<div class="letter-scene">
+
+<div class="envelope-wrapper" onclick="openEnvelope()">
+
+<div class="envelope" id="envelope">
+
+<div class="flap"></div>
+
+<div class="paper">
 
 <div class="line" style="animation-delay:0s">Em à,</div>
 <div class="line" style="animation-delay:2s">Cảm ơn em vì đã yêu thương anh.</div>
@@ -288,27 +282,34 @@ transform:scale(1);
 <div class="line" style="animation-delay:10s">Anh yêu em 💙</div>
 
 </div>
-</div>
+
 </div>
 
+<div class="tap-text" id="tapText">💌 A có viết lá thư tặng em nè</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ENDING -->
+
 <div class="ending" id="ending">
-<img src="ending.jpg" id="endingImg">
+<img src="ending.jpg">
 <button onclick="location.reload()">Chơi lại</button>
 </div>
 
 <script>
 
-const start=document.getElementById("start");
-const intro=document.getElementById("intro");
-const game=document.getElementById("game");
-const reward=document.getElementById("reward");
-const letter=document.getElementById("letter");
-const question=document.getElementById("question");
-const options=document.getElementById("options");
-const letterScene=document.getElementById("letterScene");
-const ending=document.getElementById("ending");
-const endingImg=document.getElementById("endingImg");
-const flash=document.getElementById("flash");
+const start=document.getElementById("start")
+const intro=document.getElementById("intro")
+const game=document.getElementById("game")
+const reward=document.getElementById("reward")
+const letter=document.getElementById("letter")
+
+const question=document.getElementById("question")
+const options=document.getElementById("options")
 
 const questions=[
 
@@ -318,155 +319,132 @@ const questions=[
 {q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Chúng tôi chung tình cơ mà"],correct:1},
 {q:"Anh thích ăn gì nhất?",a:["Steak","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
 {q:"Màu anh thích em mặc?",a:["Trắng","Nho","Hồng","Xanh"],correct:2},
-{q:"Điều anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
+{q:"Điều anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ nhưng yêu anh trong tối"],correct:3},
 {q:"Anh muốn đi cùng em bao lâu?",a:["Một tẹo","Vài năm","Trăm năm","Mãi mãi"],correct:3}
 
-];
+]
 
-let current=0;
-let locked=false;
-let wrongCount=0;
-
-/* PARTICLES */
-
-const particles=document.getElementById("particles");
-
-for(let i=0;i<25;i++){
-const p=document.createElement("div");
-p.className="particle";
-p.innerHTML=["💗","💖","💕","💘"][Math.floor(Math.random()*4)];
-p.style.left=Math.random()*100+"%";
-p.style.animationDuration=(10+Math.random()*10)+"s";
-p.style.fontSize=(16+Math.random()*20)+"px";
-particles.appendChild(p);
-}
-
-/* GAME */
+let current=0
+let locked=false
 
 function showIntro(){
-start.classList.add("hidden");
-intro.classList.remove("hidden");
+start.classList.add("hidden")
+intro.classList.remove("hidden")
 }
 
 function startGame(){
-intro.classList.add("hidden");
-game.classList.remove("hidden");
-createProgress();
-document.getElementById("bgMusic").volume=0.05;
-document.getElementById("bgMusic").play().catch(()=>{});
-showQuestion();
+intro.classList.add("hidden")
+game.classList.remove("hidden")
+createProgress()
+showQuestion()
 }
 
 function createProgress(){
-const progress=document.getElementById("progress");
-progress.innerHTML="";
+
+const progress=document.getElementById("progress")
+progress.innerHTML=""
+
 for(let i=0;i<questions.length;i++){
-const h=document.createElement("div");
-h.className="heartStep";
-h.innerHTML="💗";
-progress.appendChild(h);
+
+const h=document.createElement("div")
+h.className="heartStep"
+h.innerHTML="💗"
+progress.appendChild(h)
+
 }
+
 }
 
 function updateProgress(){
-document.querySelectorAll(".heartStep")[current-1].classList.add("active");
+
+document.querySelectorAll(".heartStep")[current-1].classList.add("active")
+
 }
 
 function showQuestion(){
-wrongCount=0;
-const q=questions[current];
-question.innerText=q.q;
-options.innerHTML="";
+
+const q=questions[current]
+
+question.innerText=q.q
+options.innerHTML=""
+
 q.a.forEach((opt,i)=>{
-const div=document.createElement("div");
-div.className="option";
-div.innerText=opt;
-div.onclick=()=>checkAnswer(i,div);
-options.appendChild(div);
-});
+
+const div=document.createElement("div")
+div.className="option"
+div.innerText=opt
+div.onclick=()=>checkAnswer(i,div)
+
+options.appendChild(div)
+
+})
+
 }
 
 function checkAnswer(index,el){
 
-if(locked)return;
-locked=true;
+if(locked)return
+locked=true
 
 if(index===questions[current].correct){
 
-el.classList.add("selected");
-launchHearts(el);
+el.classList.add("selected")
 
-current++;
-updateProgress();
+current++
+updateProgress()
 
 if(current===questions.length){
 
 setTimeout(()=>{
-game.classList.add("hidden");
-reward.classList.remove("hidden");
-},1000);
+game.classList.add("hidden")
+reward.classList.remove("hidden")
+},800)
 
 }else{
 
 setTimeout(()=>{
-locked=false;
-showQuestion();
-},800);
+locked=false
+showQuestion()
+},800)
 
 }
 
 }else{
 
-wrongCount++;
-el.classList.add("wrong");
-
-let msg="";
-
-if(wrongCount===1){
-msg="Cho bé chọn lại đó 🥺";
-}
-else if(wrongCount===2){
-msg="Ơ, lại sai á, cho em thêm cơ hội nữa 😆";
-}
-else{
-msg="Chọn sai nữa là chia tay nha 😤";
-}
-
-setTimeout(()=>{alert(msg);},200);
+el.classList.add("wrong")
 
 setTimeout(()=>{
-el.classList.remove("wrong");
-locked=false;
-},600);
+el.classList.remove("wrong")
+locked=false
+},800)
 
 }
 
 }
 
-/* HEART BURST */
+/* SHOW LETTER */
 
-function launchHearts(element){
+function showLetter(){
 
-const rect=element.getBoundingClientRect();
-
-for(let i=0;i<20;i++){
-
-const heart=document.createElement("div");
-
-heart.className="heart";
-heart.innerHTML="💗";
-
-heart.style.left=rect.left+rect.width/2+"px";
-heart.style.top=rect.top+"px";
-
-heart.style.setProperty("--x",(Math.random()*300-150)+"px");
-heart.style.setProperty("--y",-(Math.random()*400+200)+"px");
-
-document.body.appendChild(heart);
-
-setTimeout(()=>heart.remove(),3500);
+reward.classList.add("hidden")
+letter.classList.remove("hidden")
 
 }
+
+/* OPEN ENVELOPE */
+
+function openEnvelope(){
+
+document.getElementById("envelope").classList.add("open")
+document.getElementById("tapText").style.display="none"
+
+setTimeout(()=>{
+heartRain()
+},4000)
+
+setTimeout(()=>{
+document.getElementById("ending").classList.add("show")
+},9000)
 
 }
 
@@ -474,64 +452,28 @@ setTimeout(()=>heart.remove(),3500);
 
 function heartRain(){
 
-for(let i=0;i<140;i++){
+for(let i=0;i<120;i++){
 
 setTimeout(()=>{
 
-const heart=document.createElement("div");
+const heart=document.createElement("div")
 
-heart.className="heart";
-heart.innerHTML=["💗","💖","💕","💘","💓"][Math.floor(Math.random()*5)];
+heart.className="heart"
+heart.innerHTML="💗"
 
-heart.style.left=Math.random()*window.innerWidth+"px";
-heart.style.top=Math.random()*window.innerHeight+"px";
+heart.style.left=Math.random()*window.innerWidth+"px"
+heart.style.top=Math.random()*window.innerHeight+"px"
 
-heart.style.fontSize=(18+Math.random()*22)+"px";
+heart.style.setProperty("--x",(Math.random()*300-150)+"px")
+heart.style.setProperty("--y",-(Math.random()*400)+"px")
 
-heart.style.setProperty("--x",(Math.random()*300-150)+"px");
-heart.style.setProperty("--y",-(Math.random()*600+200)+"px");
+document.body.appendChild(heart)
 
-document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),3000)
 
-setTimeout(()=>heart.remove(),4000);
-
-},i*25);
+},i*30)
 
 }
-
-}
-
-/* LETTER */
-
-function showLetter(){
-
-reward.classList.add("hidden");
-letter.classList.remove("hidden");
-
-setTimeout(()=>{
-letterScene.classList.add("active");
-},200);
-
-setTimeout(heartRain,11000);
-setTimeout(startEnding,15000);
-
-}
-
-/* ENDING */
-
-function startEnding(){
-
-flash.classList.add("show");
-
-setTimeout(()=>{
-flash.classList.remove("show");
-},300);
-
-ending.classList.add("show");
-
-setTimeout(()=>{
-endingImg.classList.add("focus");
-},600);
 
 }
 
@@ -539,4 +481,3 @@ endingImg.classList.add("focus");
 
 </body>
 </html>
-
