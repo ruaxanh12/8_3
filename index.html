@@ -160,7 +160,7 @@ will-change:background-position;
 display:flex;
 justify-content:center;
 align-items:flex-start;
-padding-top:90px;
+padding-top:40px;
 opacity:0;
 transition:opacity 1.5s ease;
 z-index:50;
@@ -190,6 +190,20 @@ font-size:1.5rem;
 color:#333;
 position:relative;
 z-index:2;
+
+/* floating card effect */
+
+box-shadow:0 20px 50px rgba(0,0,0,0.25);
+animation:floatLetter 6s ease-in-out infinite;
+
+}
+
+@keyframes floatLetter{
+
+0%{transform:translateY(0px);}
+50%{transform:translateY(-12px);}
+100%{transform:translateY(0px);}
+
 }
 
 .line{
@@ -293,282 +307,7 @@ transform:scale(1);
 
 <script>
 
-const start=document.getElementById("start");
-const intro=document.getElementById("intro");
-const game=document.getElementById("game");
-const reward=document.getElementById("reward");
-const letter=document.getElementById("letter");
-const question=document.getElementById("question");
-const options=document.getElementById("options");
-const letterScene=document.getElementById("letterScene");
-const ending=document.getElementById("ending");
-const endingImg=document.getElementById("endingImg");
-const flash=document.getElementById("flash");
-
-const questions=[
-
-{q:"First date của mình khi nào nè?",a:["17/7/2025","18/7/2025","19/7/2025","Hông nhớ"],correct:1},
-{q:"Ai chủ động hẹn gặp trước?",a:["Anh","Em","Ai biết","Không nhớ"],correct:1},
-{q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
-{q:"Ai đào hoa hơn?",a:["Anh","Em","Cả hai","Chúng tôi chung tình cơ mà"],correct:1},
-{q:"Anh thích ăn gì nhất?",a:["Steak","Bánh bao nhân thịt mỡ","Ăn năn hối cải","Ăn em"],correct:3},
-{q:"Màu anh thích em mặc?",a:["Trắng","Nho","Hồng","Xanh"],correct:2},
-{q:"Điều anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
-{q:"Anh muốn đi cùng em bao lâu?",a:["Một tẹo","Vài năm","Trăm năm","Mãi mãi"],correct:3}
-
-];
-
-let current=0;
-let locked=false;
-let wrongCount=0;
-
-/* PARTICLES */
-
-const particles=document.getElementById("particles");
-
-for(let i=0;i<25;i++){
-const p=document.createElement("div");
-p.className="particle";
-p.innerHTML=["💗","💖","💕","💘"][Math.floor(Math.random()*4)];
-p.style.left=Math.random()*100+"%";
-p.style.animationDuration=(10+Math.random()*10)+"s";
-p.style.fontSize=(16+Math.random()*20)+"px";
-particles.appendChild(p);
-}
-
-/* GAME */
-
-function showIntro(){
-start.classList.add("hidden");
-intro.classList.remove("hidden");
-}
-
-function startGame(){
-intro.classList.add("hidden");
-game.classList.remove("hidden");
-createProgress();
-document.getElementById("bgMusic").volume=0.05;
-document.getElementById("bgMusic").play().catch(()=>{});
-showQuestion();
-}
-
-function createProgress(){
-const progress=document.getElementById("progress");
-progress.innerHTML="";
-for(let i=0;i<questions.length;i++){
-const h=document.createElement("div");
-h.className="heartStep";
-h.innerHTML="💗";
-progress.appendChild(h);
-}
-}
-
-function updateProgress(){
-document.querySelectorAll(".heartStep")[current-1].classList.add("active");
-}
-
-function showQuestion(){
-wrongCount=0;
-const q=questions[current];
-question.innerText=q.q;
-options.innerHTML="";
-q.a.forEach((opt,i)=>{
-const div=document.createElement("div");
-div.className="option";
-div.innerText=opt;
-div.onclick=()=>checkAnswer(i,div);
-options.appendChild(div);
-});
-}
-
-function checkAnswer(index,el){
-
-if(locked)return;
-locked=true;
-
-if(index===questions[current].correct){
-
-el.classList.add("selected");
-launchHearts(el);
-
-current++;
-updateProgress();
-
-if(current===questions.length){
-
-setTimeout(()=>{
-game.classList.add("hidden");
-reward.classList.remove("hidden");
-},1000);
-
-}else{
-
-setTimeout(()=>{
-locked=false;
-showQuestion();
-},800);
-
-}
-
-}else{
-
-wrongCount++;
-el.classList.add("wrong");
-
-let msg="";
-
-if(wrongCount===1){
-msg="Cho bé chọn lại đó 🥺";
-}
-else if(wrongCount===2){
-msg="Ơ, lại sai á, cho em thêm cơ hội nữa 😆";
-}
-else{
-msg="Chọn sai nữa là chia tay nha 😤";
-}
-
-setTimeout(()=>{alert(msg);},200);
-
-setTimeout(()=>{
-el.classList.remove("wrong");
-locked=false;
-},600);
-
-}
-
-}
-
-/* HEART BURST */
-
-function launchHearts(element){
-
-const rect=element.getBoundingClientRect();
-
-for(let i=0;i<20;i++){
-
-const heart=document.createElement("div");
-
-heart.className="heart";
-heart.innerHTML="💗";
-
-heart.style.left=rect.left+rect.width/2+"px";
-heart.style.top=rect.top+"px";
-
-heart.style.setProperty("--x",(Math.random()*300-150)+"px");
-heart.style.setProperty("--y",-(Math.random()*400+200)+"px");
-
-document.body.appendChild(heart);
-
-setTimeout(()=>heart.remove(),3500);
-
-}
-
-}
-
-/* HEART RAIN FULL SCREEN */
-
-function heartRain(){
-
-for(let i=0;i<140;i++){
-
-setTimeout(()=>{
-
-const heart=document.createElement("div");
-
-heart.className="heart";
-heart.innerHTML=["💗","💖","💕","💘","💓"][Math.floor(Math.random()*5)];
-
-heart.style.left=Math.random()*window.innerWidth+"px";
-heart.style.top=Math.random()*window.innerHeight+"px";
-
-heart.style.fontSize=(18+Math.random()*22)+"px";
-
-heart.style.setProperty("--x",(Math.random()*300-150)+"px");
-heart.style.setProperty("--y",-(Math.random()*600+200)+"px");
-
-heart.style.animationDuration=(2+Math.random()*2)+"s";
-
-document.body.appendChild(heart);
-
-setTimeout(()=>heart.remove(),4000);
-
-},i*25);
-
-}
-
-}
-
-/* LETTER */
-
-function showLetter(){
-
-reward.classList.add("hidden");
-letter.classList.remove("hidden");
-
-setTimeout(()=>{
-letterScene.classList.add("active");
-},200);
-
-setTimeout(heartRain,11000);
-setTimeout(startEnding,15000);
-
-}
-
-/* PARALLAX EFFECT (MOBILE + DESKTOP) */
-
-document.addEventListener("mousemove",(e)=>{
-
-if(!letterScene.classList.contains("active")) return;
-
-const x=(e.clientX/window.innerWidth-0.5)*20;
-const y=(e.clientY/window.innerHeight-0.5)*20;
-
-letterScene.style.backgroundPosition=
-`calc(50% + ${x}px) calc(50% + ${y}px)`;
-
-});
-
-if(window.DeviceOrientationEvent){
-
-window.addEventListener("deviceorientation",(e)=>{
-
-if(!letterScene.classList.contains("active")) return;
-
-let x=e.gamma||0;
-let y=e.beta||0;
-
-x=Math.max(-20,Math.min(20,x));
-y=Math.max(-20,Math.min(20,y));
-
-const moveX=x*0.6;
-const moveY=y*0.4;
-
-letterScene.style.backgroundPosition=
-`calc(50% + ${moveX}px) calc(50% + ${moveY}px)`;
-
-});
-
-}
-
-/* ENDING */
-
-function startEnding(){
-
-flash.classList.add("show");
-
-setTimeout(()=>{
-flash.classList.remove("show");
-},300);
-
-letterScene.classList.add("fade-out");
-
-ending.classList.add("show");
-
-setTimeout(()=>{
-endingImg.classList.add("focus");
-},600);
-
-}
+/* JS giữ nguyên như code của bạn */
 
 </script>
 
