@@ -27,7 +27,7 @@ background:white;
 opacity:0;
 pointer-events:none;
 z-index:999;
-transition:opacity 0.4s ease;
+transition:opacity 0.35s ease;
 }
 
 .flash.show{
@@ -133,11 +133,11 @@ background:#ffd0d0;
 
 .heart{
 position:fixed;
-font-size:26px;
 pointer-events:none;
 z-index:9999;
 animation:fly 3.5s cubic-bezier(.22,1,.36,1) forwards;
 text-shadow:0 0 10px rgba(255,100,150,0.8);
+filter: drop-shadow(0 0 8px rgba(255,120,170,0.8));
 }
 
 @keyframes fly{
@@ -444,6 +444,7 @@ const rect=element.getBoundingClientRect();
 for(let i=0;i<20;i++){
 
 const heart=document.createElement("div");
+
 heart.className="heart";
 heart.innerHTML="💗";
 
@@ -461,26 +462,34 @@ setTimeout(()=>heart.remove(),3500);
 
 }
 
-/* HEART RAIN */
+/* HEART RAIN FULL SCREEN */
 
 function heartRain(){
 
-for(let i=0;i<60;i++){
+for(let i=0;i<140;i++){
+
+setTimeout(()=>{
 
 const heart=document.createElement("div");
 
 heart.className="heart";
-heart.innerHTML=["💗","💖","💕","💘"][Math.floor(Math.random()*4)];
+heart.innerHTML=["💗","💖","💕","💘","💓"][Math.floor(Math.random()*5)];
 
 heart.style.left=Math.random()*window.innerWidth+"px";
-heart.style.top=window.innerHeight+"px";
+heart.style.top=Math.random()*window.innerHeight+"px";
 
-heart.style.setProperty("--x",(Math.random()*200-100)+"px");
-heart.style.setProperty("--y",-(window.innerHeight+200)+"px");
+heart.style.fontSize=(18+Math.random()*22)+"px";
+
+heart.style.setProperty("--x",(Math.random()*300-150)+"px");
+heart.style.setProperty("--y",-(Math.random()*600+200)+"px");
+
+heart.style.animationDuration=(2+Math.random()*2)+"s";
 
 document.body.appendChild(heart);
 
 setTimeout(()=>heart.remove(),4000);
+
+},i*25);
 
 }
 
