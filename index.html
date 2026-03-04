@@ -30,9 +30,7 @@ z-index:999;
 transition:opacity 0.35s ease;
 }
 
-.flash.show{
-opacity:1;
-}
+.flash.show{opacity:1;}
 
 /* PARTICLES */
 
@@ -82,9 +80,7 @@ box-shadow:0 8px 20px rgba(255,92,138,0.35);
 transition:0.3s;
 }
 
-button:hover{
-transform:translateY(-3px);
-}
+button:hover{transform:translateY(-3px);}
 
 /* PROGRESS */
 
@@ -118,9 +114,7 @@ box-shadow:0 4px 12px rgba(0,0,0,0.05);
 transition:all 0.25s ease;
 }
 
-.option:hover{
-transform:scale(1.03);
-}
+.option:hover{transform:scale(1.03);}
 
 .option.selected{
 background:#ffd6e6;
@@ -139,7 +133,6 @@ pointer-events:none;
 z-index:9999;
 animation:fly 3.5s cubic-bezier(.22,1,.36,1) forwards;
 text-shadow:0 0 10px rgba(255,100,150,0.8);
-filter:drop-shadow(0 0 8px rgba(255,120,170,0.8));
 }
 
 @keyframes fly{
@@ -198,9 +191,7 @@ opacity:0;
 min-height:1.6em;
 }
 
-.line.show{
-opacity:1;
-}
+.line.show{opacity:1;}
 
 .cursor{
 display:inline-block;
@@ -287,15 +278,14 @@ transform:scale(1);
 <div class="letter-overlay"></div>
 
 <div class="letter">
-
 <div class="line">Em à,</div>
 <div class="line">Cảm ơn em vì đã yêu thương anh.</div>
 <div class="line">8/3 này tuy anh không ở cạnh em được,</div>
 <div class="line">nhưng em luôn là điều mà anh trân trọng nhất.</div>
 <div class="line">Chúc em có một ngày thật ấm áp và hạnh phúc.</div>
 <div class="line">Anh yêu em 💙</div>
-
 </div>
+
 </div>
 </div>
 
@@ -305,8 +295,6 @@ transform:scale(1);
 </div>
 
 <script>
-
-/* DOM */
 
 const start=document.getElementById("start");
 const intro=document.getElementById("intro");
@@ -320,10 +308,7 @@ const ending=document.getElementById("ending");
 const endingImg=document.getElementById("endingImg");
 const flash=document.getElementById("flash");
 
-/* QUESTIONS */
-
 const questions=[
-
 {q:"First date của mình khi nào nè?",a:["17/7/2025","18/7/2025","19/7/2025","Hông nhớ"],correct:1},
 {q:"Ai chủ động hẹn gặp trước?",a:["Anh","Em","Ai biết","Không nhớ"],correct:1},
 {q:"Ai hay giận dỗi hơn?",a:["Anh","Em","Cả hai","Một đứa hay ghẹo, một đứa hay quạo"],correct:1},
@@ -332,125 +317,148 @@ const questions=[
 {q:"Màu anh thích em mặc?",a:["Trắng","Nho","Hồng","Xanh"],correct:2},
 {q:"Điều anh yêu nhất ở em?",a:["Mạnh mẽ","Dịu dàng","Giàu","Ngây thơ trong sáng nhưng yêu anh trong tối"],correct:3},
 {q:"Anh muốn đi cùng em bao lâu?",a:["Một tẹo","Vài năm","Trăm năm","Mãi mãi"],correct:3}
-
 ];
 
 let current=0;
 let locked=false;
 let wrongCount=0;
 
-/* TYPEWRITER */
+/* PARTICLES */
 
-function typeLine(el,text,speed,next){
+const particles=document.getElementById("particles");
 
-let i=0;
-el.innerHTML="";
-el.classList.add("show");
+for(let i=0;i<25;i++){
+const p=document.createElement("div");
+p.className="particle";
+p.innerHTML=["💗","💖","💕","💘"][Math.floor(Math.random()*4)];
+p.style.left=Math.random()*100+"%";
+p.style.animationDuration=(10+Math.random()*10)+"s";
+p.style.fontSize=(16+Math.random()*20)+"px";
+particles.appendChild(p);
+}
 
-const cursor=document.createElement("span");
-cursor.className="cursor";
-el.appendChild(cursor);
+/* GAME */
 
-const typing=setInterval(()=>{
+function showIntro(){
+start.classList.add("hidden");
+intro.classList.remove("hidden");
+}
 
-if(i<text.length){
-cursor.insertAdjacentText("beforebegin",text[i]);
-i++;
+function startGame(){
+intro.classList.add("hidden");
+game.classList.remove("hidden");
+createProgress();
+document.getElementById("bgMusic").volume=0.05;
+document.getElementById("bgMusic").play().catch(()=>{});
+showQuestion();
+}
+
+function createProgress(){
+const progress=document.getElementById("progress");
+progress.innerHTML="";
+for(let i=0;i<questions.length;i++){
+const h=document.createElement("div");
+h.className="heartStep";
+h.innerHTML="💗";
+progress.appendChild(h);
+}
+}
+
+function updateProgress(){
+document.querySelectorAll(".heartStep")[current-1].classList.add("active");
+}
+
+function showQuestion(){
+wrongCount=0;
+const q=questions[current];
+question.innerText=q.q;
+options.innerHTML="";
+q.a.forEach((opt,i)=>{
+const div=document.createElement("div");
+div.className="option";
+div.innerText=opt;
+div.onclick=()=>checkAnswer(i,div);
+options.appendChild(div);
+});
+}
+
+function checkAnswer(index,el){
+
+if(locked)return;
+locked=true;
+
+if(index===questions[current].correct){
+
+el.classList.add("selected");
+launchHearts(el);
+
+current++;
+updateProgress();
+
+if(current===questions.length){
+
+setTimeout(()=>{
+game.classList.add("hidden");
+reward.classList.remove("hidden");
+},1000);
+
 }else{
-clearInterval(typing);
-cursor.remove();
-if(next) setTimeout(next,400);
-}
-
-},speed);
-
-}
-
-/* LETTER */
-
-function showLetter(){
-
-reward.classList.add("hidden");
-letter.classList.remove("hidden");
-
-setTimeout(()=>{letterScene.classList.add("active");},200);
-
-const lines=document.querySelectorAll(".line");
-const texts=[...lines].map(el=>el.textContent);
-
-lines.forEach(el=>el.textContent="");
-
-typeLine(lines[0],texts[0],60,()=>{
-typeLine(lines[1],texts[1],60,()=>{
-typeLine(lines[2],texts[2],60,()=>{
-typeLine(lines[3],texts[3],60,()=>{
-typeLine(lines[4],texts[4],60,()=>{
-typeLine(lines[5],texts[5],90);
-});
-});
-});
-});
-});
-
-setTimeout(heartRain,11000);
-setTimeout(startEnding,15000);
-
-}
-
-/* HEART RAIN */
-
-function heartRain(){
-
-for(let i=0;i<140;i++){
 
 setTimeout(()=>{
-
-const heart=document.createElement("div");
-
-heart.className="heart";
-heart.innerHTML=["💗","💖","💕","💘","💓"][Math.floor(Math.random()*5)];
-
-heart.style.left=Math.random()*window.innerWidth+"px";
-heart.style.top=Math.random()*window.innerHeight+"px";
-
-heart.style.fontSize=(18+Math.random()*22)+"px";
-
-heart.style.setProperty("--x",(Math.random()*300-150)+"px");
-heart.style.setProperty("--y",-(Math.random()*600+200)+"px");
-
-heart.style.animationDuration=(2+Math.random()*2)+"s";
-
-document.body.appendChild(heart);
-
-setTimeout(()=>heart.remove(),4000);
-
-},i*25);
+locked=false;
+showQuestion();
+},800);
 
 }
 
-}
+}else{
 
-/* ENDING */
+wrongCount++;
+el.classList.add("wrong");
 
-function startEnding(){
+let msg="";
 
-flash.classList.add("show");
+if(wrongCount===1){msg="Cho bé chọn lại đó 🥺";}
+else if(wrongCount===2){msg="Ơ, lại sai á, cho em thêm cơ hội nữa 😆";}
+else{msg="Chọn sai nữa là chia tay nha 😤";}
 
-setTimeout(()=>{
-flash.classList.remove("show");
-},300);
-
-letterScene.classList.add("fade-out");
-
-ending.classList.add("show");
+setTimeout(()=>{alert(msg);},200);
 
 setTimeout(()=>{
-endingImg.classList.add("focus");
+el.classList.remove("wrong");
+locked=false;
 },600);
 
 }
 
-</script>
+}
 
+/* HEART BURST */
+
+function launchHearts(element){
+
+const rect=element.getBoundingClientRect();
+
+for(let i=0;i<20;i++){
+
+const heart=document.createElement("div");
+heart.className="heart";
+heart.innerHTML="💗";
+
+heart.style.left=rect.left+rect.width/2+"px";
+heart.style.top=rect.top+"px";
+
+heart.style.setProperty("--x",(Math.random()*300-150)+"px");
+heart.style.setProperty("--y",-(Math.random()*400+200)+"px");
+
+document.body.appendChild(heart);
+
+setTimeout(()=>heart.remove(),3500);
+
+}
+
+}
+
+</script>
 </body>
 </html>
