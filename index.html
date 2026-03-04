@@ -154,6 +154,9 @@ opacity:0;
 position:fixed;
 inset:0;
 background:url('background.webp') center/cover no-repeat;
+background-size:110%;
+background-position:center;
+will-change:background-position;
 display:flex;
 justify-content:center;
 align-items:flex-start;
@@ -508,6 +511,42 @@ letterScene.classList.add("active");
 
 setTimeout(heartRain,11000);
 setTimeout(startEnding,15000);
+
+}
+
+/* PARALLAX EFFECT (MOBILE + DESKTOP) */
+
+document.addEventListener("mousemove",(e)=>{
+
+if(!letterScene.classList.contains("active")) return;
+
+const x=(e.clientX/window.innerWidth-0.5)*20;
+const y=(e.clientY/window.innerHeight-0.5)*20;
+
+letterScene.style.backgroundPosition=
+`calc(50% + ${x}px) calc(50% + ${y}px)`;
+
+});
+
+if(window.DeviceOrientationEvent){
+
+window.addEventListener("deviceorientation",(e)=>{
+
+if(!letterScene.classList.contains("active")) return;
+
+let x=e.gamma||0;
+let y=e.beta||0;
+
+x=Math.max(-20,Math.min(20,x));
+y=Math.max(-20,Math.min(20,y));
+
+const moveX=x*0.6;
+const moveY=y*0.4;
+
+letterScene.style.backgroundPosition=
+`calc(50% + ${moveX}px) calc(50% + ${moveY}px)`;
+
+});
 
 }
 
